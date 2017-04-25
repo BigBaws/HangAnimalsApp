@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="1dp"
+        android:weightSum="1"
+        android:background="@drawable/gradient_blue">
+
+        <TextView
+            android:text="HangAnimals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_title"
+            android:textSize="36sp"
+            android:textStyle="normal|bold"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:text="Made by Thomas Anthony"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_author"
+            android:textColor="@android:color/background_light"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:layout_marginBottom="40dp" />
+
+        <TextView
+            android:text="Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_email_txt"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/shadowColor" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/login_email"
+            android:autoText="false"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/shadowColor"
+            android:textStyle="normal|bold"
+            android:elevation="0dp"
+            android:text="developer@hanganimals.com" />
+
+        <TextView
+            android:text="Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_password_txt"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/shadowColor" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/login_password"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@android:color/white"
+            android:elevation="1dp"
+            android:text="qwe123" />
+
+        <Button
+            android:text="Login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/login_btn_login"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"
+            style="@style/com_facebook_button_like"
+            android:layout_marginBottom="5dp"
+            android:elevation="1dp" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/soap" />
+
+    </LinearLayout>
+
+</LinearLayout>

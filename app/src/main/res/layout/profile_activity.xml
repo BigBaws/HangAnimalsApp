@@ -1,0 +1,292 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bigbaws.hanganimals.frontend.MultiplayerFragment"
+    android:background="@drawable/gradient_blue">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <TextView
+            android:text="Your Profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_title"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@color/shadowColor"
+            android:layout_marginTop="10dp"
+            android:textStyle="normal|bold" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:text="Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_name_txt"
+                android:layout_weight="1"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading.."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_edit_name"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/shadowColor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_email_txt"
+                android:layout_weight="1"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading.."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_edit_email"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Animal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_animal_txt"
+                android:layout_weight="1"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading.."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_animal_name"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:textAlignment="textEnd"
+                android:textColor="@color/shadowColor" />
+
+        </LinearLayout>
+
+        <Button
+            android:text="Logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_btn_logout"
+            style="@style/com_facebook_button_like"
+            android:textSize="18sp"
+            android:textStyle="normal|bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:text="Highscore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_highscore_title"
+            android:textColor="@color/shadowColor"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="20dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Games"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_games_txt"
+                android:layout_weight="0.45"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp"
+                android:layout_width="100dp" />
+
+            <TextView
+                android:text="Loading..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_games"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Won"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_won_txt"
+                android:layout_weight="0.45"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_won"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Winstreak"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_winstreak_txt"
+                android:layout_weight="0.45"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_winstreak"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Highscore"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_highscore_txt"
+                android:layout_weight="0.45"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp" />
+
+            <TextView
+                android:text="Loading..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_highscore"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:clickable="true">
+
+            <TextView
+                android:text="Highest Combo"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_combo_txt"
+                android:layout_weight="0.45"
+                android:textColor="@color/shadowColor"
+                android:textSize="24sp"
+                android:layout_width="200dp" />
+
+            <TextView
+                android:text="Loading..."
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/profile_combo"
+                android:layout_weight="1"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="textEnd" />
+
+        </LinearLayout>
+
+        <Button
+            android:text="Reset Highscore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile_btn_reset"
+            style="@style/com_facebook_button_like"
+            android:textSize="18sp"
+            android:textStyle="normal|bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+    </LinearLayout>
+
+</FrameLayout>

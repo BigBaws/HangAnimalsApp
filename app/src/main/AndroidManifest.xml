@@ -1,0 +1,48 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.bigbaws.hanganimals">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:screenOrientation="portrait"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
+        android:allowBackup="true"
+        android:icon="@drawable/hanganimalslogo"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider382650925435783"
+            android:exported="true" />
+
+        <activity android:name="com.bigbaws.hanganimals.frontend.login.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity android:name=".frontend.MainMenuActivity" />
+        <activity android:name=".frontend.PlayActivity" android:noHistory="true" />
+        <activity android:name=".frontend.MultiplayerActivity" android:noHistory="true" />
+        <activity android:name=".frontend.ChangeAnimalActivity" android:noHistory="true" />
+        <activity android:name=".frontend.ProfileActivity" android:noHistory="true" />
+        <activity android:name=".frontend.PlayMultiActivity" android:noHistory="true" />
+
+
+    </application>
+
+</manifest>
+
+

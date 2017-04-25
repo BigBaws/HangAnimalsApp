@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "867275677334",
+    "firebase_url": "https://hanganimals.firebaseio.com",
+    "project_id": "hanganimals",
+    "storage_bucket": "hanganimals.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:867275677334:android:a72b0df4762accd2",
+        "android_client_info": {
+          "package_name": "com.bigbaws.hanganimals"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "867275677334-i79qsjs4blnkqrvlll5igacq387d449r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAVmEgiOKVetpK2ywHdqWgOn-4u_7JMTs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

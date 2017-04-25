@@ -1,0 +1,84 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bigbaws.hanganimals.frontend.MultiplayerFragment"
+    android:background="@drawable/gradient_blue"
+    android:clickable="true">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true">
+
+        <TextView
+            android:text="Multiplayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/multiplayer_title"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@color/shadowColor"
+            android:layout_marginTop="10dp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:text="The rules are simple! \n\nA person writes a secret word, the other players tries to guess the secret word."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/multiplayer_rules"
+            android:textColor="@color/shadowColor"
+            android:textSize="24sp"
+            android:padding="10dp"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true">
+
+            <TextView
+                android:text="Write the secret word here"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/multiplayer_write_txt"
+                android:textSize="24sp"
+                android:textColor="@color/shadowColor"
+                android:textAlignment="center"
+                android:layout_marginTop="40dp" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:ems="10"
+                android:id="@+id/multiplayer_secretword"
+                android:autoText="false"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/shadowColor"
+                android:textStyle="normal|bold"
+                android:elevation="0dp"
+                android:textAlignment="center" />
+
+            <Button
+                android:text="Begin Game"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/multiplayer_btn_begin"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                style="@style/com_facebook_button_like"
+                android:textStyle="normal|bold"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
