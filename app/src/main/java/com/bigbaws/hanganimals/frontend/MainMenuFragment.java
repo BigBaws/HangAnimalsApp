@@ -36,9 +36,6 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener  
     private FragmentManager mFragmentManager;
     private FragmentTransaction mFragmentTransaction;
 
-    /* Firebase */
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
 
     /* Log */
     private static final String TAG = "";
@@ -61,9 +58,6 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener  
             System.out.println("Bundle was null");
         }
 
-        /* Get Firebase Instance */
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
 
         /* Welcome & Buttons w. ClickListeners */
         welcome = (TextView) mView.findViewById(R.id.mainmenu_welcome);
@@ -76,27 +70,6 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener  
         btn_profile = (Button) mView.findViewById(R.id.mainmenu_btn_profile);
         btn_profile.setOnClickListener(this);
 
-        /* Get the user */
-        DatabaseReference user = database.getReference("v0/users/" + mAuth.getCurrentUser().getUid());
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.getValue(User.class);
-                currentUser.setId(dataSnapshot.getKey());
-                welcome.setText("Hello "+currentUser.name);
-
-                System.out.println("************* User **************");
-                System.out.println(currentUser.id);
-                System.out.println(currentUser.name);
-                System.out.println(currentUser.email);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Database Error.", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Failed");
-            }
-        });
 
         return mView;
     }
@@ -109,7 +82,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener  
         if (btn_play.isPressed()) {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Bundle b = new Bundle();
-            b.putString("newsid", mAuth.getCurrentUser().getDisplayName());
+//            b.putString("newsid", mAuth.getCurrentUser().getDisplayName());
             PlayFragment pf = new PlayFragment();
             pf.setArguments(b);
             fragmentTransaction.replace(R.id.fragment_body, pf).addToBackStack(null).commit();

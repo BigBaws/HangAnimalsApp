@@ -1,0 +1,98 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bigbaws.hanganimals.frontend.ChangeAnimalFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_blue"
+        android:clickable="true">
+
+        <TextView
+            android:text="Change Animal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/change_animal_title"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            android:textColor="@android:color/background_light"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="297dp"
+                    android:layout_weight="1"
+                    android:id="@+id/change_animal_image"
+                    android:layout_marginTop="40dp"
+                    app:srcCompat="@drawable/logo" />
+
+
+
+
+                <!--
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current animal"
+                    android:layout_gravity="center"
+                    android:textColor="#ffffff"
+                    android:textSize="25sp"/>
+
+                    -->
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="3">
+
+
+            </ListView>
+
+        </LinearLayout>
+
+        <Button
+            android:text="Save Animal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/change_animal_btn_save"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="10dp"
+            style="@style/com_facebook_button_like"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+</FrameLayout>

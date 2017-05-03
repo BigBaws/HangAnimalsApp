@@ -499,6 +499,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
             d_armright.setImageResource(R.drawable.dragon_green_armright);
             d_legleft.setImageResource(R.drawable.dragon_green_legleft);
             d_legright.setImageResource(R.drawable.dragon_green_legright);
+        } else if (animal.equals("SheepBlack")) {
+            d_head.setImageResource(R.drawable.sheep_black_head);
+            d_stomach.setImageResource(R.drawable.sheep_black_stomach);
+            d_armleft.setImageResource(R.drawable.sheep_black_armleft);
+            d_armright.setImageResource(R.drawable.sheep_black_armright);
+            d_legleft.setImageResource(R.drawable.sheep_legleft);
+            d_legright.setImageResource(R.drawable.sheep_legright);
         }
 
         /* Make Animal Invisible */

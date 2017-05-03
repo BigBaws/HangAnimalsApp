@@ -1,0 +1,175 @@
+package com.bigbaws.hanganimals.backend.dao;
+
+
+import android.util.Log;
+
+import com.bigbaws.hanganimals.backend.exceptions.DAOException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.sql.SQLOutput;
+
+import javax.net.ssl.HttpsURLConnection;
+
+
+
+public class RESTConnector {
+
+    static final String baseURL = "http://ubuntu4.javabog.dk:4176/getsomerest/webresources/";
+
+
+    public static JSONObject POSTQuery(String encodedParams, String endPath) {
+
+        try {
+
+
+            URL url = new URL(baseURL + endPath);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(encodedParams);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("Response code: " + responseCode);
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                Log.e("HTTP OK", "TRUE");
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while((line = in.readLine()) != null) {
+
+                    sb.append(line);
+                    break;
+                }
+
+                in.close();
+
+                JSONObject JsonObject = new JSONObject(sb.toString());
+
+                return JsonObject;
+
+            }
+            else {
+
+                System.out.println("HTTP response code: "+responseCode);
+                return null;
+            }
+        } catch(Exception e){
+            Log.e("Exception:", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static JSONObject GETQuery(String requestURL) throws DAOException {
+
+        try {
+            URL urls = new URL(baseURL + requestURL);
+            StringBuffer data = new StringBuffer(1024);
+
+          try (BufferedReader buffer = new BufferedReader(new InputStreamReader(urls.openStream(), "UTF-8"))) {
+
+                String tmp = "";
+
+                while ((tmp = buffer.readLine()) != null)
+                    data.append(tmp).append("\n");
+
+                JSONObject jsonObject = new JSONObject(data.toString());
+                return jsonObject;
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            throw new DAOException("Error connecting to the host " + requestURL);
+        }
+
+        return null;
+    }
+
+    public static JSONObject PUTQuery (String encodedParams, String endPath) throws DAOException {
+
+        try {
+
+            Log.e("Params PUT",encodedParams );
+            URL url = new URL(baseURL + endPath);
+            System.out.println(url.toString());
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("PUT");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+            writer.write(encodedParams);
+            writer.flush();
+            writer.close();
+            os.close();
+
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+            System.out.println("Response code: " + responseCode);
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                StringBuffer sb = new StringBuffer("");
+                String line = "";
+
+                while ((line = in.readLine()) != null) {
+
+                    sb.append(line);
+                    break;
+                }
+
+                in.close();
+
+                JSONObject JsonObject = new JSONObject(sb.toString());
+
+                return JsonObject;
+
+            } else {
+
+                System.out.println("HTTP response code: " + responseCode);
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e("Exception:", e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+}

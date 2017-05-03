@@ -6,22 +6,30 @@ package com.bigbaws.hanganimals.backend.user;
 
 public class User {
 
-    public String id;
-    public String name;
-    public String email;
-    public String image;
+    public static String id;
+    public static String name;
+    public static String token;
+    public static String study;
+//    public String singleplayer;
+//    public String multiplayer;
+//    public String animal;
+//    public String animalColor;
 
-    public void User(String id, String name, String email, String image) {
+    public User(String id, String name, String study, String token) {
         this.id = id;
         this.name = name;
-        this.email = email;
-        this.image = image;
+        this.token = token;
+        this.study = study;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getName() { return this.name; }
+//    public String getUserName() { return this.name; }
+//    public String getUserID() { return this.id;}
+//    public String getUserToken() { return this.token;}
+//    public String getUserStudy() { return this.study;}
+
 
 }

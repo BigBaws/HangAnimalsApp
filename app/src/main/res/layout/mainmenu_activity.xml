@@ -41,13 +41,13 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="194dp"
-            app:srcCompat="@drawable/death"
             android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             android:adjustViewBounds="false"
-            android:layout_marginTop="20dp" />
+            app:srcCompat="@drawable/death" />
 
         <TextView
             android:text="Welcome"

@@ -32,16 +32,13 @@ import com.google.firebase.database.ValueEventListener;
  */
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    /* Firebase */
-    private FirebaseAuth mAuth;
-    private FirebaseDatabase database;
 
     /* Log */
     private static final String TAG = "";
 
     SharedPreferences shared;
 
-    public TextView profile_name, profile_email, profile_animal, profile_games, profile_won, profile_winstreak, profile_highscore, profile_combo;
+    public TextView profile_study, profile_name, profile_email, profile_animal, profile_games, profile_won, profile_winstreak, profile_highscore, profile_combo;
     public Button logout, reset;
     
     @Override
@@ -50,9 +47,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.profile_activity);
 
-        /* Get Firebase Instance */
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
 
         /* Shared Preferences */
         shared = getSharedPreferences("Animal", Context.MODE_PRIVATE);
@@ -74,34 +68,18 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         int combo = shared.getInt("Combo", 0);
 
         /* Profile Layout and Data */
+        profile_study = (TextView) findViewById(R.id.profile_edit_study);
         profile_name = (TextView) findViewById(R.id.profile_edit_name);
         profile_email = (TextView) findViewById(R.id.profile_edit_email);
         profile_animal = (TextView) findViewById(R.id.profile_animal_name);
         logout = (Button) findViewById(R.id.profile_btn_logout);
         logout.setOnClickListener(this);
 
-        /* Get the user */
-        DatabaseReference user = database.getReference("v0/users/" + mAuth.getCurrentUser().getUid());
-        user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.getValue(User.class);
-                currentUser.setId(dataSnapshot.getKey());
-                profile_name.setText(currentUser.name);
-                profile_email.setText(currentUser.email);
 
-                System.out.println("************* Profile **************");
-                System.out.println(currentUser.id);
-                System.out.println(currentUser.name);
-                System.out.println(currentUser.email);
-            }
+        profile_study.setText(User.study);
+        profile_name.setText(User.name);
+        profile_email.setText(User.id);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ProfileActivity.this, "Database Error.", Toast.LENGTH_SHORT).show();
-                Log.w(TAG, "Failed");
-            }
-        });
 
         profile_animal.setText(animal);
         profile_games = (TextView) findViewById(R.id.profile_games);
@@ -125,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View view) {
         if (logout.isPressed()) {
-            mAuth.signOut();
+//            mAuth.signOut();
             Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
             startActivity(intent);
         } else if (reset.isPressed()) {

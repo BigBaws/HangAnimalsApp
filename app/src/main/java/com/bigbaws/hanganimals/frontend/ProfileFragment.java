@@ -80,12 +80,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 User currentUser = dataSnapshot.getValue(User.class);
                 currentUser.setId(dataSnapshot.getKey());
                 profile_name.setText(currentUser.name);
-                profile_email.setText(currentUser.email);
+//                profile_email.setText(currentUser.email);
 
                 System.out.println("************* Profile **************");
                 System.out.println(currentUser.id);
                 System.out.println(currentUser.name);
-                System.out.println(currentUser.email);
+//                System.out.println(currentUser.email);
             }
 
             @Override
