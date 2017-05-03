@@ -15,12 +15,14 @@ public class PaymentAsync extends AsyncTask<String, String, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPreExecute() {
 
     }
 
     @Override
-    protected void onPreExecute() {
+    protected void onPostExecute(String result) {
 
     }
+
+
 }
