@@ -15,7 +15,12 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            // Used for downloading dependency com.github.lkorth:device-automator
+            url "https://jitpack.io"
+        }
         jcenter()
+        mavenCentral()
     }
 }
 

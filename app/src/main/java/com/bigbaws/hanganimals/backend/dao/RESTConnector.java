@@ -55,7 +55,7 @@ public class RESTConnector {
             System.out.println("Response code: " + responseCode);
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
-                Log.e("HTTP OK", "TRUE");
+                Log.e("POST QUERY - HTTP OK", "TRUE");
                 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
                 StringBuffer sb = new StringBuffer("");

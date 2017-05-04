@@ -1,30 +1,49 @@
 package com.bigbaws.hanganimals.frontend;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.util.CustomListAdapter;
+import com.bigbaws.hanganimals.backend.util.PayPalController;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
+
+import java.math.BigDecimal;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
 public class ChangeAnimalActivity extends ListActivity implements View.OnClickListener {
 
+
+    private ImageButton paypal_button;
     private ImageView image_animal;
     private Button change_animal_save;
     private ListView animalsListView;
@@ -45,6 +64,7 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
         image_animal = (ImageView) findViewById(R.id.change_animal_image);
         change_animal_save = (Button) findViewById(R.id.change_animal_btn_save);
         change_animal_save.setOnClickListener(this);
+        paypal_button = (ImageButton) findViewById(R.id.paypal_button);
 
         if(animal.equalsIgnoreCase("SheepWhite")) {
             image_animal.setImageResource(R.drawable.sheep_white);
@@ -59,7 +79,44 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
         }
 
 
-        // Måske kan listadapter klassen tilpasses ligesom animals klassen, og der kan tilføjes en boolean?
+        paypal_button.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        paypal_button.setImageResource(R.drawable.paypal_button_pressed);
+                        break;
+                    }
+                    case MotionEvent.ACTION_UP: {
+                        paypal_button.setImageResource(R.drawable.paypal_button);
+
+                        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE);
+
+                        Intent intent = new Intent(ChangeAnimalActivity.this, PaymentActivity.class);
+
+                        // send the same configuration for restart resiliency
+                        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, PayPalController.config);
+
+                        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
+
+                        startActivityForResult(intent, PayPalController.REQUEST_CODE_PAYMENT);
+
+
+
+
+                    }
+
+                }
+
+                return true;
+            }
+
+        });
+
+
+
+
         CustomListAdapter adapter = new CustomListAdapter(this, animals, imgId);
 
         animalsListView = (ListView) findViewById(android.R.id.list);
@@ -119,4 +176,13 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
             startActivity(intent);
         }
     }
+
+
+    private PayPalPayment getThingToBuy(String paymentIntent) {
+        return new PayPalPayment(new BigDecimal("12999.95"), "DKK", "White Bunny",
+                paymentIntent);
+    }
+
+
+
 }

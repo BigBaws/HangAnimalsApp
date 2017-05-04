@@ -1,8 +1,10 @@
 package com.bigbaws.hanganimals.frontend.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.asynctasks.LoginAsync;
+import com.bigbaws.hanganimals.backend.util.PayPalController;
+import com.paypal.android.sdk.payments.PayPalService;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,6 +51,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 new LoginAsync(LoginActivity.this).execute(username, password, endPath);
 //                new LoginAsync(LoginActivity.this).execute();
+
+                Intent intent = new Intent(LoginActivity.this, PayPalService.class);
+                intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, PayPalController.config);
+                startService(intent);
 
             }
         });

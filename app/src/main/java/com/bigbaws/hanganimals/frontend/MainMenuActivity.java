@@ -1,16 +1,27 @@
 package com.bigbaws.hanganimals.frontend;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.asynctasks.SinglePlayerAsync;
 import com.bigbaws.hanganimals.backend.user.User;
+import com.bigbaws.hanganimals.backend.util.PayPalController;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
+import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
+import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
 
 /**
  * Created by BigBaws on 11-Jan-17.
@@ -35,8 +46,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.mainmenu_activity);
 
-        // token, userid, gameid, endpath
-        new SinglePlayerAsync().execute(User.token, User.id, "0", "singleplayer/create");
+
 
         /* Check Bundle */
         if (savedInstanceState != null) {
@@ -65,6 +75,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         if (btn_play.isPressed()) {
+            // token, userid, gameid, endpath
+            new SinglePlayerAsync().execute(User.token, User.id, "0", "singleplayer/create");
 
             Intent intent = new Intent(MainMenuActivity.this, PlayActivity.class);
             startActivity(intent);
@@ -87,5 +99,92 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         super.onStop();
 
 //        User.isAuthenticated = false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PayPalController.REQUEST_CODE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                        data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                        Log.i(PayPalController.TAG, confirm.toJSONObject().toString(4));
+                        Log.i(PayPalController.TAG, confirm.getPayment().toJSONObject().toString(4));
+                        /**
+                         *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
+                         * or consent completion.
+                         * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+                         * for more details.
+                         *
+                         * For sample mobile backend interactions, see
+                         * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
+                         */
+                        Toast.makeText(this, "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG).show();
+//                        displayResultText("PaymentConfirmation info received from PayPal");
+
+
+                    } catch (JSONException e) {
+                        Log.e(PayPalController.TAG, "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i(PayPalController.TAG, "The user canceled.");
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        PayPalController.TAG,
+                        "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+            }
+        } else if (requestCode == PayPalController.REQUEST_CODE_FUTURE_PAYMENT) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalFuturePaymentActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("FuturePaymentExample", auth.toJSONObject().toString(4));
+
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("FuturePaymentExample", authorization_code);
+
+//                        sendAuthorizationToServer(auth);
+//                        displayResultText("Future Payment code received from PayPal");
+
+                    } catch (JSONException e) {
+                        Log.e("FuturePaymentExample", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("FuturePaymentExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "FuturePaymentExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+            }
+        } else if (requestCode == PayPalController.REQUEST_CODE_PROFILE_SHARING) {
+            if (resultCode == Activity.RESULT_OK) {
+                PayPalAuthorization auth =
+                        data.getParcelableExtra(PayPalProfileSharingActivity.EXTRA_RESULT_AUTHORIZATION);
+                if (auth != null) {
+                    try {
+                        Log.i("ProfileSharingExample", auth.toJSONObject().toString(4));
+
+                        String authorization_code = auth.getAuthorizationCode();
+                        Log.i("ProfileSharingExample", authorization_code);
+
+//                        sendAuthorizationToServer(auth);
+//                        displayResultText("Profile Sharing code received from PayPal");
+
+                    } catch (JSONException e) {
+                        Log.e("ProfileSharingExample", "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Log.i("ProfileSharingExample", "The user canceled.");
+            } else if (resultCode == PayPalFuturePaymentActivity.RESULT_EXTRAS_INVALID) {
+                Log.i(
+                        "ProfileSharingExample",
+                        "Probably the attempt to previously start the PayPalService had an invalid PayPalConfiguration. Please see the docs.");
+            }
+        }
     }
 }

@@ -38,7 +38,7 @@ public class LoginAsync extends AsyncTask<String, Void, JSONObject> {
                     .appendQueryParameter("username", params[0])
                     .appendQueryParameter("password", params[1]);
             String encodedParams = builder.build().getEncodedQuery();
-            Log.e("postParams", encodedParams);
+//            Log.e("postParams", encodedParams);
 
             return RESTConnector.POSTQuery(encodedParams, params[2]);
 
@@ -73,12 +73,13 @@ public class LoginAsync extends AsyncTask<String, Void, JSONObject> {
             try {
 
                 User user  = new User(result.getString("userid"), result.getString("name"), result.getString("study"), result.getString("token"));
-                Log.e("USER", User.id);
+                Log.e("LOGIN ASYNC ON - USER", User.id);
                 Intent mainIntent = new Intent(c, MainMenuActivity.class);
 //                mainIntent.putExtra("ID", result.getString("userid"));
                 c.startActivity(mainIntent);
 
-                System.out.println("POST; user token: " + User.token);
+                Log.e("onPost - user token", User.token);
+//                System.out.println("POST; user token: " + User.token);
 
 
             } catch (JSONException e) {

@@ -12,7 +12,7 @@ public class User {
     public static String study;
 //    public String singleplayer;
 //    public String multiplayer;
-//    public String animal;
+//    public String animal;w
 //    public String animalColor;
 
     public User(String id, String name, String study, String token) {
