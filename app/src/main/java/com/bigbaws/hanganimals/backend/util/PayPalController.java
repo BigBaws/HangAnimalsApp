@@ -34,7 +34,7 @@ import com.paypal.android.sdk.payments.ShippingAddress;
  */
 
 public class PayPalController {
-    public static final String TAG = "paymentController";
+    public static final String TAG = "paypalController";
     /**
      * - Set to PayPalConfiguration.ENVIRONMENT_PRODUCTION to move real money.
      *

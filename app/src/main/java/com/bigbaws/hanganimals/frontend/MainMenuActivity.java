@@ -102,6 +102,16 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+
+
+
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PayPalController.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {

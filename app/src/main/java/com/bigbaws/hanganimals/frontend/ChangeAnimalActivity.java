@@ -1,18 +1,11 @@
 package com.bigbaws.hanganimals.frontend;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,20 +13,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.util.CustomListAdapter;
 import com.bigbaws.hanganimals.backend.util.PayPalController;
-import com.paypal.android.sdk.payments.PayPalAuthorization;
-import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
 import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
-
-import org.json.JSONException;
 
 import java.math.BigDecimal;
 
@@ -43,6 +29,8 @@ import java.math.BigDecimal;
 public class ChangeAnimalActivity extends ListActivity implements View.OnClickListener {
 
 
+    private String itemToBuy;
+    private String buyPrice;
     private ImageButton paypal_button;
     private ImageView image_animal;
     private Button change_animal_save;
@@ -59,6 +47,8 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
         /* Shared Preferences */
         SharedPreferences shared = ChangeAnimalActivity.this.getSharedPreferences("Animal", Context.MODE_PRIVATE);
         String animal = shared.getString("Animal", "");
+
+
 
         /* Layout */
         image_animal = (ImageView) findViewById(R.id.change_animal_image);
@@ -91,15 +81,11 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
                     case MotionEvent.ACTION_UP: {
                         paypal_button.setImageResource(R.drawable.paypal_button);
 
-                        PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE);
-
+                        PayPalPayment thingToBuy = setThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE, itemToBuy, buyPrice);
                         Intent intent = new Intent(ChangeAnimalActivity.this, PaymentActivity.class);
-
                         // send the same configuration for restart resiliency
                         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, PayPalController.config);
-
                         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
-
                         startActivityForResult(intent, PayPalController.REQUEST_CODE_PAYMENT);
 
 
@@ -134,22 +120,32 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
                 String selectedItem = animals[+position];
 
                 if (selectedItem == "White-sheep") {
+                    itemToBuy = "White Sheep";
+                    buyPrice = "5000";
                     image_animal.setImageResource(R.drawable.sheep_white);
                     editor.putString("TempAnimal", "SheepWhite");
                     editor.commit();
                 } else if (selectedItem == "Pink-sheep") {
+                    itemToBuy = "Pink Sheep";
+                    buyPrice = "6000";
                     image_animal.setImageResource(R.drawable.sheep_pink);
                     editor.putString("TempAnimal", "SheepPink");
                     editor.commit();
                 } else if (selectedItem == "Blue-bunny") {
+                    itemToBuy = "Blue Bunny";
+                    buyPrice = "7000";
                     image_animal.setImageResource(R.drawable.bunny_blue);
                     editor.putString("TempAnimal", "BunnyBlue");
                     editor.commit();
                 } else if (selectedItem == "Green-dragon") {
+                    itemToBuy = "Green Dragon";
+                    buyPrice = "9999";
                     image_animal.setImageResource(R.drawable.dragon_green);
                     editor.putString("TempAnimal", "DragonGreen");
                     editor.commit();
                 }  else if (selectedItem == "Black-sheep") {
+                    itemToBuy = "Black Sheep";
+                    buyPrice = "8000";
                     image_animal.setImageResource(R.drawable.sheep_black);
                     editor.putString("TempAnimal", "SheepBlack");
                     editor.commit();
@@ -178,8 +174,8 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
     }
 
 
-    private PayPalPayment getThingToBuy(String paymentIntent) {
-        return new PayPalPayment(new BigDecimal("12999.95"), "DKK", "White Bunny",
+    private PayPalPayment setThingToBuy(String paymentIntent, String name, String price) {
+        return new PayPalPayment(new BigDecimal(price), "DKK", name,
                 paymentIntent);
     }
 
