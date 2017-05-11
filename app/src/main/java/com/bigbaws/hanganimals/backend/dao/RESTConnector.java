@@ -23,13 +23,12 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class RESTConnector {
 
-    static final String baseURL = "http://ubuntu4.javabog.dk:4176/getsomerest/webresources/";
+    static final String baseURL = "http://ubuntu4.javabog.dk:4176/HangAnimalsREST/webresources";
 
 
     public static JSONObject POSTQuery(String encodedParams, String endPath) {
 
         try {
-
 
             URL url = new URL(baseURL + endPath);
 

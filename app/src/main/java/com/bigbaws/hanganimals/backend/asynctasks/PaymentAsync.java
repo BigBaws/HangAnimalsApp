@@ -16,12 +16,10 @@ public class PaymentAsync extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPreExecute() {
-
     }
 
     @Override
     protected void onPostExecute(String result) {
-
     }
 
 

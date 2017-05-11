@@ -93,26 +93,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    @Override
-    protected void onStop() {
-        // call the superclass method first
-        super.onStop();
-
-//        User.isAuthenticated = false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
-
-
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("TEST", "Activity result is working");
+
         if (requestCode == PayPalController.REQUEST_CODE_PAYMENT) {
             if (resultCode == Activity.RESULT_OK) {
                 PaymentConfirmation confirm =

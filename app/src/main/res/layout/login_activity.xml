@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
-            android:text="Made by Thomas Anthony"
+            android:text="Made by Group 16"
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
             android:textSize="16sp" />

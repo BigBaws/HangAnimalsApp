@@ -28,11 +28,11 @@
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity android:name=".frontend.MainMenuActivity" />
-        <activity android:name=".frontend.PlayActivity" android:noHistory="true" />
-        <activity android:name=".frontend.MultiplayerActivity" android:noHistory="true" />
-        <activity android:name=".frontend.ChangeAnimalActivity" android:noHistory="true" />
-        <activity android:name=".frontend.ProfileActivity" android:noHistory="true" />
-        <activity android:name=".frontend.PlayMultiActivity" android:noHistory="true" />
+        <activity android:name=".frontend.PlayActivity" />
+        <activity android:name=".frontend.MultiplayerActivity"  />
+        <activity android:name=".frontend.ChangeAnimalActivity" />
+        <activity android:name=".frontend.ProfileActivity"  />
+        <activity android:name=".frontend.PlayMultiActivity" />
 
 
     </application>

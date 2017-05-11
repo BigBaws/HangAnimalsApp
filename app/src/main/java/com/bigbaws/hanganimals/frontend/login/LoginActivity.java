@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                 username = username_input.getText().toString().trim();
                 password = password_input.getText().toString().trim();
 
-                endPath = "login";
+                endPath = "/login";
 
                 new LoginAsync(LoginActivity.this).execute(username, password, endPath);
 //                new LoginAsync(LoginActivity.this).execute();

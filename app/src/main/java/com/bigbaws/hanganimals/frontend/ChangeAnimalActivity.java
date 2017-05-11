@@ -1,11 +1,14 @@
 package com.bigbaws.hanganimals.frontend;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,20 +16,29 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.util.CustomListAdapter;
 import com.bigbaws.hanganimals.backend.util.PayPalController;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
 import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
-public class ChangeAnimalActivity extends ListActivity implements View.OnClickListener {
+public class ChangeAnimalActivity extends Activity implements View.OnClickListener {
 
 
     private String itemToBuy;
@@ -48,7 +60,9 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
         SharedPreferences shared = ChangeAnimalActivity.this.getSharedPreferences("Animal", Context.MODE_PRIVATE);
         String animal = shared.getString("Animal", "");
 
-
+        /* Below variables is just to prevent app from crashing while testing */
+        itemToBuy = animal;
+        buyPrice = "5000";
 
         /* Layout */
         image_animal = (ImageView) findViewById(R.id.change_animal_image);
@@ -87,8 +101,6 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
                         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, PayPalController.config);
                         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
                         startActivityForResult(intent, PayPalController.REQUEST_CODE_PAYMENT);
-
-
 
 
                     }
@@ -180,5 +192,57 @@ public class ChangeAnimalActivity extends ListActivity implements View.OnClickLi
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != RESULT_CANCELED) {
+            if (requestCode == PayPalController.REQUEST_CODE_PAYMENT) {
+                if (resultCode == Activity.RESULT_OK) {
+                    PaymentConfirmation response=
+                            data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                    if (response != null) {
+                        try {
+                            Log.i(PayPalController.TAG, response.toJSONObject().toString(4));
+                            Log.i(PayPalController.TAG, response.getPayment().toJSONObject().toString(4));
 
+
+                            /**
+                             *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
+                             * or consent completion.
+                             * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+                             * for more details.
+                             *
+                             * For sample mobile backend interactions, see
+                             * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
+                             */
+
+
+                            if(response.toJSONObject().getJSONObject("response").getString("state").equalsIgnoreCase("approved")) {
+                                System.out.println("Purchase is " + response.toJSONObject().getJSONObject("response").getString("state"));
+                            }else {
+                                System.out.println("Purchase is " + response.toJSONObject().getJSONObject("response").getString("state"));
+                            }
+
+                            System.out.println("LOLOOLOLO " + response.getPayment() );
+
+                            Toast.makeText(this, "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG).show();
+
+
+                        } catch (JSONException e) {
+                            Log.e(PayPalController.TAG, "an extremely unlikely failure occurred: ", e);
+                        }
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.i(PayPalController.TAG, "The user canceled.");
+                } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
+                    Log.i(
+                            PayPalController.TAG,
+                            "An invalid Payment or PayPalConfiguration was submitted. Please see the docs.");
+                }
+            }
+
+        }else {
+            Toast.makeText(this, "Purchase cancelled", Toast.LENGTH_LONG).show();
+        }
+    }
 }
+
