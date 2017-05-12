@@ -2,31 +2,27 @@ package com.bigbaws.hanganimals.frontend;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.database.DataSetObserver;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
+import com.bigbaws.hanganimals.backend.util.MultiplayerCustomAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
 
-public class MultiplayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class MultiplayerActivity extends AppCompatActivity {
 
-    private EditText secretword;
     private ListView roomsListView;
-    private Button begin;
-    String[] animals = {"White-sheep", "Pink-sheep", "Black-sheep", "Blue-bunny", "Green-dragon"};
+    private ArrayList<String> roomsList = new ArrayList<String>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,21 +30,23 @@ public class MultiplayerActivity extends AppCompatActivity implements View.OnCli
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.multiplayer_activity);
 
-        roomsListView = (ListView) findViewById(R.id.currentGameRooms);
+        roomsList.add("Room 1");
+        roomsList.add("Room 2");
+        roomsList.add("Room 3");
+        roomsList.add("Room 4");
+        roomsList.add("Room 5");
+        roomsList.add("Room 6");
+        roomsList.add("Room 7");
+        roomsList.add("Room 8");
+        roomsList.add("Room 9");
+        roomsList.add("Room 10");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, animals);
+
+        MultiplayerCustomAdapter adapter = new MultiplayerCustomAdapter(roomsList, this);
+        roomsListView = (ListView) findViewById(R.id.currentGameRooms);
         roomsListView.setAdapter(adapter);
 
 
     }
 
-
-    @Override
-    public void onClick(View view) {
-        if (begin.isPressed()) {
-            Intent intent = new Intent(MultiplayerActivity.this, PlayMultiActivity.class);
-            intent.putExtra("SecretWord", secretword.getText().toString());
-            startActivity(intent);
-        }
-    }
 }
