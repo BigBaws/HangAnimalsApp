@@ -83,8 +83,22 @@
                 android:text="Multiplayer"
                 android:textSize="18sp"
                 android:textStyle="normal|bold"
-                android:layout_above="@+id/mainmenu_btn_settings"
-              />
+                android:layout_above="@+id/mainmenu_btn_chat" />
+
+
+
+            <Button
+                android:id="@+id/mainmenu_btn_chat"
+                android:layout_marginTop="10dp"
+                style="@style/com_facebook_button_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:text="Chat"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_above="@+id/mainmenu_btn_settings" />
 
             <Button
                 android:layout_marginTop="10dp"
@@ -97,22 +111,9 @@
                 android:text="Settings"
                 android:textSize="18sp"
                 android:textStyle="normal|bold"
-                android:layout_above="@+id/mainmenu_btn_profile"
-                />
-
-            <Button
-                android:layout_marginTop="10dp"
-                android:id="@+id/mainmenu_btn_profile"
-                style="@style/com_facebook_button_like"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginRight="25dp"
-                android:text="Profile"
-                android:textSize="18sp"
-                android:textStyle="normal|bold"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginBottom="30dp"
+                />
         </RelativeLayout>
 
 

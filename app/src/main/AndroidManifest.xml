@@ -32,6 +32,7 @@
         <activity android:name=".frontend.ProfileActivity" />
         <activity android:name=".frontend.PlayMultiActivity" />
         <activity android:name=".frontend.SettingsActivity" />
+        <activity android:name=".frontend.ChatActivity"></activity>
     </application>
 
 </manifest>

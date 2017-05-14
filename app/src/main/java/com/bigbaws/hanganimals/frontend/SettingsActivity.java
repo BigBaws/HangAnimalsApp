@@ -12,7 +12,7 @@ import com.bigbaws.hanganimals.frontend.login.LoginActivity;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private Button changeAnimal_btn, logout_btn;
+    private Button changeAnimal_btn, logout_btn, profile_btn;
 
 
     @Override
@@ -21,13 +21,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_settings);
 
 
-
+        profile_btn = (Button) findViewById(R.id.settings_btn_profile);
         changeAnimal_btn = (Button) findViewById(R.id.settings_btn_changeanimal);
         logout_btn = (Button) findViewById(R.id.settings_btn_logout);
 
 
         changeAnimal_btn.setOnClickListener(this);
         logout_btn.setOnClickListener(this);
+        profile_btn.setOnClickListener(this);
 
 
 
@@ -47,7 +48,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
 
-
+        }else if(v == profile_btn) {
+            Intent intent = new Intent(SettingsActivity.this, ProfileActivity.class);
+            startActivity(intent);
         }
     }
 }

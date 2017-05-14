@@ -28,9 +28,21 @@
         android:textSize="36sp"
         android:textStyle="normal|bold" />
 
+    <Button
+        android:id="@+id/settings_btn_profile"
+        style="@style/com_facebook_button_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:text="Profile"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:layout_above="@+id/settings_btn_changeanimal" />
 
     <Button
         android:text="Change Animal"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/settings_btn_changeanimal"

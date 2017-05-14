@@ -34,7 +34,7 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     private TextView welcome;
 
     /* Buttons */
-    private Button btn_play, btn_multiplayer, btn_settings, btn_profile;
+    private Button btn_play, btn_multiplayer, btn_settings, btn_chat;
 
 
 
@@ -61,8 +61,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         btn_multiplayer.setOnClickListener(this);
         btn_settings = (Button) findViewById(R.id.mainmenu_btn_settings);
         btn_settings.setOnClickListener(this);
-        btn_profile = (Button) findViewById(R.id.mainmenu_btn_profile);
-        btn_profile.setOnClickListener(this);
+        btn_chat = (Button) findViewById(R.id.mainmenu_btn_chat);
+        btn_chat.setOnClickListener(this);
 
 
 
@@ -80,8 +80,8 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         } else if (btn_settings.isPressed()) {
             Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
             startActivity(intent);
-        } else if (btn_profile.isPressed()) {
-            Intent intent = new Intent(MainMenuActivity.this, ProfileActivity.class);
+        } else if (btn_chat.isPressed()) {
+            Intent intent = new Intent(MainMenuActivity.this, ChatActivity.class);
             startActivity(intent);
         }
     }
