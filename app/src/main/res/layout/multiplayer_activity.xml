@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Multiplayer Games"
+        android:text="Available Game Rooms"
         android:textAlignment="center"
         android:textColor="@color/shadowColor"
         android:textSize="30sp"
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Create New room"
+        android:text="Create New Room"
         android:textAlignment="center"
         android:textSize="24sp"
         android:textStyle="normal|bold" />

@@ -2,39 +2,23 @@ package com.bigbaws.hanganimals.frontend;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.backend.dao.RESTConnector;
-import com.bigbaws.hanganimals.backend.exceptions.DAOException;
-import com.bigbaws.hanganimals.backend.logic.GameLogic;
 import com.bigbaws.hanganimals.backend.user.User;
-import com.bigbaws.hanganimals.backend.util.ActivePlayersCustomAdapter;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,8 +30,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
     private String wordToGuess;
 
-//
-//    GameLogic logic = new GameLogic();
 
     TextView info, tvhighscore, tvgamescore, tvcombo;
     ImageView comboimage;
@@ -94,17 +76,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         comboimage = (ImageView) findViewById(R.id.play_combo_image);
         comboimage.setImageResource(0);
 
-//        timer = new CountDownTimer(120000, 1000) { // adjust the milli seconds here
-//            public void onTick(long millisUntilFinished) {
-//                if (logic.getWord() != null) {
-//                    tvgamescore.setText("" + (millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000)));
-//                    gamescore = millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000);
-//                }
-//            }
-//            public void onFinish() {
-//                tvgamescore.setText("0");
-//            }
-//        }.start();
 
 
         /* Set the parts to invisible */
@@ -530,7 +501,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }).create().show();
 
-
     }
 
 
@@ -539,7 +509,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             protected JSONObject doInBackground(String... params) {
-
 
                 try {
 
@@ -551,36 +520,22 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                     Log.e("leave room", encodedParams);
 
-                    return RESTConnector.POSTQuery(encodedParams, params[2]);
-
+                    return RESTConnector.POSTQuery(encodedParams, params[0]);
 
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
 
-
-
                 return null;
             }
 
-            @Override
-            protected void onPreExecute() {
-//                progressDialog = ProgressDialog.show(context,
-//                        "Please wait",
-//                        "Attempting to join room");
-
-            }
 
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
-//                progressDialog.dismiss();
 
                 System.out.println("LEAVE GAME RETURN OBJECT = " + jsonObject);
                 finish();
-
-
             }
-
 
         }.execute("/singleplayer/leave");
     }
@@ -590,8 +545,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             protected JSONObject doInBackground(String... params) {
-
-
                 try {
 
                     Uri.Builder builder = new Uri.Builder()
@@ -609,15 +562,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
                 }catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
-
                 return null;
-            }
-
-            @Override
-            protected void onPreExecute() {
-
             }
 
             @Override

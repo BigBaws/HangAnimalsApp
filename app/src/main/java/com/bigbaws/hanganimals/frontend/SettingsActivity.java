@@ -10,6 +10,10 @@ import android.widget.Button;
 import com.bigbaws.hanganimals.R;
 import com.bigbaws.hanganimals.frontend.login.LoginActivity;
 
+/**
+ * Created by Silas on 9-May-17.
+ */
+
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button changeAnimal_btn, logout_btn, profile_btn;

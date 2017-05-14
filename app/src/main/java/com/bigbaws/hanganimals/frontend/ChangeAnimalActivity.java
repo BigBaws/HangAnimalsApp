@@ -63,6 +63,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
         change_animal_save.setOnClickListener(this);
         paypal_button = (ImageButton) findViewById(R.id.paypal_button);
 
+        /* Set current animal as the one you previously saved */
         if(animal.equalsIgnoreCase("SheepWhite")) {
             image_animal.setImageResource(R.drawable.sheep_white);
         }else if(animal.equalsIgnoreCase("SheepPink")) {
@@ -75,7 +76,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
             image_animal.setImageResource(R.drawable.sheep_black);
         }
 
-
+        /* Start paypal service when buy button is pressed */
         paypal_button.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -95,7 +96,6 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
                         intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
                         startActivityForResult(intent, PayPalController.REQUEST_CODE_PAYMENT);
 
-
                     }
 
                 }
@@ -105,11 +105,8 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
 
         });
 
-
-
-
+        /* Inititalise animals list and set prices for each animal */
         ChangeAnimalCustomAdapter adapter = new ChangeAnimalCustomAdapter(this, animals, imgId);
-
         animalsListView = (ListView) findViewById(android.R.id.list);
         animalsListView.setAdapter(adapter);
         animalsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -184,7 +181,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
                 paymentIntent);
     }
 
-
+    /* Handle response from paypals servers */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode != RESULT_CANCELED) {
@@ -197,17 +194,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
                             Log.i(PayPalController.TAG, response.toJSONObject().toString(4));
                             Log.i(PayPalController.TAG, response.getPayment().toJSONObject().toString(4));
 
-
-                            /**
-                             *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
-                             * or consent completion.
-                             * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
-                             * for more details.
-                             *
-                             * For sample mobile backend interactions, see
-                             * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
-                             */
-
+                             //TODO: send 'confirm' (and possibly confirm.getPayment() to server verification
 
                             if(response.toJSONObject().getJSONObject("response").getString("state").equalsIgnoreCase("approved")) {
                                 System.out.println("Purchase is " + response.toJSONObject().getJSONObject("response").getString("state"));
@@ -215,10 +202,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
                                 System.out.println("Purchase is " + response.toJSONObject().getJSONObject("response").getString("state"));
                             }
 
-                            System.out.println("LOLOOLOLO " + response.getPayment() );
-
                             Toast.makeText(this, "PaymentConfirmation info received from PayPal", Toast.LENGTH_LONG).show();
-
 
                         } catch (JSONException e) {
                             Log.e(PayPalController.TAG, "an extremely unlikely failure occurred: ", e);

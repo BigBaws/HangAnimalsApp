@@ -50,8 +50,8 @@ public class LoginActivity extends AppCompatActivity {
                 endPath = "/login";
 
                 new LoginAsync(LoginActivity.this).execute(username, password, endPath);
-//                new LoginAsync(LoginActivity.this).execute();
 
+                /* Start PayPal service */
                 Intent intent = new Intent(LoginActivity.this, PayPalService.class);
                 intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, PayPalController.config);
                 startService(intent);

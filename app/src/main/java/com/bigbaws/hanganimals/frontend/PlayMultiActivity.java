@@ -413,6 +413,7 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
 
         }.execute(User.token, User.id, "/multiplayer/room/" + roomid + "/leave");
     }
+
     public void guessLetterAsync(String letter) {
         new AsyncTask<String, Void, JSONObject>() {
 
@@ -473,15 +474,15 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
                         d_legright.setVisibility(View.VISIBLE);
                     }
 
-                    if(wrongs == 6) {
-                        wordToGuess.setText("You didn't guess the word :(\n\n" + hiddenWord);
-                        replay.setVisibility(View.VISIBLE);
-                        endgame.setVisibility(View.VISIBLE);
-
-                        /* Make top row disappear and show replay button*/
-                        hideButtons();
-                        replay.setVisibility(View.VISIBLE);
-                    }
+//                    if(wrongs == 6) {
+//                        wordToGuess.setText("You didn't guess the word :(\n\n" + hiddenWord);
+//                        replay.setVisibility(View.VISIBLE);
+//                        endgame.setVisibility(View.VISIBLE);
+//
+//                        /* Make top row disappear and show replay button*/
+//                        hideButtons();
+//                        replay.setVisibility(View.VISIBLE);
+//                    }
 
 
                 } catch (JSONException e1) {

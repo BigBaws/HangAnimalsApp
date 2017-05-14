@@ -20,7 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by BigBaws on 11-Jan-17.
+ * Created by Silas on 8-May-17.
  */
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener  {
@@ -36,15 +36,11 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     /* Buttons */
     private Button btn_play, btn_multiplayer, btn_settings, btn_chat;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.mainmenu_activity);
-
-
 
         /* Check Bundle */
         if (savedInstanceState != null) {
@@ -64,8 +60,6 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         btn_chat = (Button) findViewById(R.id.mainmenu_btn_chat);
         btn_chat.setOnClickListener(this);
 
-
-
     }
 
 
@@ -81,11 +75,12 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
             Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
             startActivity(intent);
         } else if (btn_chat.isPressed()) {
+            joinChatRoomAsync();
             Intent intent = new Intent(MainMenuActivity.this, ChatActivity.class);
             startActivity(intent);
         }
     }
-
+    /* Create game async call */
     public void createSinglePlayerGameAsync() {
         new AsyncTask<String, Void, JSONObject>() {
 
@@ -153,4 +148,42 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
         }.execute("/singleplayer/create");
     }
 
+    /* join game async call */
+    public void joinChatRoomAsync() {
+
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", User.token)
+                            .appendQueryParameter("userid", User.id);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    Log.e("Join Chat room", encodedParams);
+
+                    return RESTConnector.POSTQuery(encodedParams, params[0]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+
+                System.out.println("JOIN CHAT ROOM: = " + jsonObject);
+
+            }
+
+
+        }.execute("/chat/join");
+    }
 }

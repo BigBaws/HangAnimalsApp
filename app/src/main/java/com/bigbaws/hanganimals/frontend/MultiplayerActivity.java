@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Silas on 11-May-17.
@@ -36,6 +38,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     private ArrayList<String> roomsList = new ArrayList<String>();
     private ProgressDialog progressDialog;
     private final Handler handler = new Handler();
+    private GameRoomsCustomAdapter adapter;
     private boolean activityIsActive = true;
 
     @Override
@@ -44,24 +47,23 @@ public class MultiplayerActivity extends AppCompatActivity {
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.multiplayer_activity);
 
-
-
+        /* Initialise game rooms list */
+        adapter = new GameRoomsCustomAdapter(roomsList, MultiplayerActivity.this);
+        roomsListView = (ListView) findViewById(R.id.currentGameRooms);
+        roomsListView.setAdapter(adapter);
 
         createRoomBtn = (Button) findViewById(R.id.multiplayer_btn_createRoom);
         createRoomBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("HEY", "create room button ");
+                Log.e("HEY", "create room button clicked ");
                 createGameAsync();
-
-
 
             }
         });
 
-
     }
-
+    /* Update game rooms list every 5 seconds */
     public void updateList() {
         handler.postDelayed(new Runnable()   {
             @Override
@@ -77,10 +79,8 @@ public class MultiplayerActivity extends AppCompatActivity {
             }
         }, 0);
     }
-
+    /* Async call add rooms to list */
     public void addRoomsToListAsync() {
-
-
         new AsyncTask<String, Void, JSONObject>() {
 
             @Override
@@ -95,18 +95,7 @@ public class MultiplayerActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPreExecute() {
-//                progressDialog = ProgressDialog.show(MultiplayerActivity.this,
-//                        "Please wait",
-//                        "Downloading list");
-
-            }
-
-            @Override
             protected void onPostExecute(JSONObject jsonObject) {
-//                progressDialog.dismiss();
-
-
                 if(jsonObject == null) {
                     Log.e("addRoomsToList", "Object is null");
                 }else {
@@ -119,18 +108,11 @@ public class MultiplayerActivity extends AppCompatActivity {
 
                         for (int i = 0; i < array.length(); i++) {
 
-
                             String roomid = array.getJSONObject(i).getString("roomid");
-//                        String upToNCharacters = roomid.substring(0, Math.min(roomid.length(), 14));
                             roomsList.add(roomid);
-
                         }
 
-
-                        GameRoomsCustomAdapter adapter = new GameRoomsCustomAdapter(roomsList, MultiplayerActivity.this);
-                        roomsListView = (ListView) findViewById(R.id.currentGameRooms);
-                        roomsListView.setAdapter(adapter);
-
+                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -138,15 +120,12 @@ public class MultiplayerActivity extends AppCompatActivity {
 
                 }
 
-
-
             }
-
 
         }.execute(User.token, User.id);
     }
 
-
+    /* Async call create game room */
     public void createGameAsync() {
         new AsyncTask<String, Void, JSONObject>() {
 
@@ -167,8 +146,6 @@ public class MultiplayerActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
-
                 return null;
             }
 
@@ -186,12 +163,8 @@ public class MultiplayerActivity extends AppCompatActivity {
                 recreate();
 
                 Toast.makeText(MultiplayerActivity.this, "New room created!", Toast.LENGTH_SHORT).show();
-                System.out.println("OBJECT " + jsonObject);
-
-
-
+                System.out.println("CREATE GAME OBJECT: " + jsonObject);
             }
-
 
         }.execute(User.token, "/multiplayer/room/create");
     }
@@ -210,5 +183,11 @@ public class MultiplayerActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         activityIsActive = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }
