@@ -65,12 +65,14 @@ dependencies {
 //        compile('com.paypal.sdk:paypal-android-sdk:2.15.3')
 //    }
 //    compile 'com.google.android.gms:play-services-wallet:8.4.0'
-    compile('com.paypal.sdk:paypal-android-sdk:2.15.3')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.google.android.gms:play-services-auth:9.8.0'
+    apply plugin: 'com.google.gms.google-services'
+
+    compile 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+    compile 'com.google.android.gms:play-services-auth:9.0.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.google.firebase:firebase-core:9.8.0'
     compile 'com.google.firebase:firebase-auth:9.8.0'
@@ -78,21 +80,18 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:9.8.0'
     compile 'com.google.firebase:firebase-storage:9.8.0'
     compile 'com.firebaseui:firebase-ui:0.6.0'
-    compile 'com.android.support:cardview-v7:25.0.+'
-    compile 'com.android.support:recyclerview-v7:25.0.+'
+    compile 'com.android.support:cardview-v7:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'com.android.support:gridlayout-v7:25.0.0'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
-    apply plugin: 'com.google.gms.google-services'
+    compile 'com.android.support:design:25.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-
+    testCompile 'junit:junit:4.12'
     testCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    androidTestCompile 'com.github.lkorth:device-automator:30238040d8'
     testCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
     testCompile 'com.android.support.test.espresso:espresso-intents:2.2.1'
     testCompile 'com.android.support.test.espresso:espresso-web:2.2.1'
     testCompile 'com.android.support.test:runner:0.4.1'
     testCompile 'com.android.support.test:rules:0.4.1'
+    androidTestCompile 'com.github.lkorth:device-automator:30238040d8'
 }

@@ -1,42 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bigbaws.hanganimals">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-
     <application
-        android:screenOrientation="portrait"
-        android:hardwareAccelerated="false"
-        android:largeHeap="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/hanganimalslogo"
         android:label="@string/app_name"
+        android:largeHeap="true"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
-        <activity android:name="com.bigbaws.hanganimals.frontend.login.LoginActivity">
+        <activity android:name=".frontend.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity android:name=".frontend.MainMenuActivity" />
         <activity android:name=".frontend.PlayActivity" />
-        <activity android:name=".frontend.MultiplayerActivity"  />
+        <activity android:name=".frontend.MultiplayerActivity" />
         <activity android:name=".frontend.ChangeAnimalActivity" />
-        <activity android:name=".frontend.ProfileActivity"  />
+        <activity android:name=".frontend.ProfileActivity" />
         <activity android:name=".frontend.PlayMultiActivity" />
-
-
+        <activity android:name=".frontend.SettingsActivity" />
     </application>
 
 </manifest>
-
-

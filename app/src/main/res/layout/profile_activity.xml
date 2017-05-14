@@ -143,6 +143,13 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_marginTop="15dp"
+                android:layout_width="fill_parent"
+                android:layout_height="2dip"
+                android:background="#ffffff" />
+
+            <!--
             <Button
                 android:text="Logout"
                 android:layout_width="match_parent"
@@ -153,6 +160,7 @@
                 android:textStyle="normal|bold"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
+            -->
 
             <TextView
                 android:text="Highscore"
@@ -161,7 +169,7 @@
                 android:id="@+id/profile_highscore_title"
                 android:textColor="@color/shadowColor"
                 android:textAlignment="center"
-                android:textSize="24sp"
+                android:textSize="30sp"
                 android:textStyle="normal|bold"
                 android:layout_marginTop="20dp" />
 
@@ -318,8 +326,7 @@
                 style="@style/com_facebook_button_like"
                 android:textSize="18sp"
                 android:textStyle="normal|bold"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_margin="10dp" />
 
         </LinearLayout>
 

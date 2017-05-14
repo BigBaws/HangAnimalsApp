@@ -32,7 +32,7 @@
 
 
     <Button
-        android:id="@+id/multiplayer_btn_begin"
+        android:id="@+id/multiplayer_btn_createRoom"
         style="@style/com_facebook_button_like"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

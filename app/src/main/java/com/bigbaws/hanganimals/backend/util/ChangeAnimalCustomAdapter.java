@@ -19,13 +19,13 @@ import java.util.ArrayList;
  * Created by Silas on 26-04-2017.
  */
 
-public class CustomListAdapter extends ArrayAdapter<String> {
+public class ChangeAnimalCustomAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] animals;
     private final Integer[] imgid;
 
-    public CustomListAdapter(Activity context, String[] animals, Integer[] imgid) {
+    public ChangeAnimalCustomAdapter(Activity context, String[] animals, Integer[] imgid) {
         super(context, R.layout.animal_list, animals);
         // TODO Auto-generated constructor stub
 

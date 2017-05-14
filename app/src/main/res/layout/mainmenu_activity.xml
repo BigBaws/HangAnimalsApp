@@ -6,30 +6,24 @@
     android:layout_height="match_parent">
 
 
-    <FrameLayout
-        android:id="@+id/play_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/gradient_blue"
         android:elevation="1dp"
-        android:weightSum="1"
-        android:background="@drawable/gradient_blue">
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <TextView
-            android:text="HangAnimals"
+            android:id="@+id/mainmenu_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_title"
-            android:textSize="36sp"
-            android:textStyle="normal|bold"
+            android:layout_marginTop="15dp"
+            android:text="HangAnimals"
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
-            android:layout_marginTop="15dp" />
+            android:textSize="36sp"
+            android:textStyle="normal|bold" />
 
         <TextView
             android:id="@+id/mainmenu_author"
@@ -50,64 +44,85 @@
             app:srcCompat="@drawable/death" />
 
         <TextView
-            android:text="Welcome"
+            android:id="@+id/mainmenu_welcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_welcome"
             android:layout_marginBottom="20dp"
-            android:textSize="24sp"
-            android:textColor="@android:color/white"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textAlignment="center" />
-
-        <Button
-            android:text="Play"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_btn_play"
-            android:layout_marginRight="25dp"
-            android:layout_marginLeft="25dp"
-            style="@style/com_facebook_button_like"
-            android:layout_marginBottom="10dp"
-            android:textStyle="normal|bold"
+            android:text="Welcome"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
             android:textSize="24sp" />
 
-        <Button
-            android:text="Multiplayer"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_btn_challenge"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            style="@style/com_facebook_button_like"
-            android:layout_marginBottom="10dp"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
+            android:layout_height="match_parent">
 
-        <Button
-            android:text="Change Animal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_btn_changeanimal"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            style="@style/com_facebook_button_like"
-            android:layout_marginBottom="10dp"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
 
-        <Button
-            android:text="Profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/mainmenu_btn_profile"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            style="@style/com_facebook_button_like"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
+            <Button
+                android:id="@+id/mainmenu_btn_play"
+                style="@style/com_facebook_button_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:text="Play"
+                android:textSize="24sp"
+                android:textStyle="normal|bold"
+                android:layout_above="@+id/mainmenu_btn_challenge" />
+
+            <Button
+                android:layout_marginTop="10dp"
+                android:id="@+id/mainmenu_btn_challenge"
+                style="@style/com_facebook_button_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:text="Multiplayer"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_above="@+id/mainmenu_btn_settings"
+              />
+
+            <Button
+                android:layout_marginTop="10dp"
+                android:id="@+id/mainmenu_btn_settings"
+                style="@style/com_facebook_button_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:text="Settings"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_above="@+id/mainmenu_btn_profile"
+                />
+
+            <Button
+                android:layout_marginTop="10dp"
+                android:id="@+id/mainmenu_btn_profile"
+                style="@style/com_facebook_button_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="25dp"
+                android:text="Profile"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:layout_marginBottom="30dp"/>
+        </RelativeLayout>
+
+
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/play_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>

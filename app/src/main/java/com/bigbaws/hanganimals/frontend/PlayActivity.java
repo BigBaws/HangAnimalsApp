@@ -307,14 +307,12 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
         if (replay.isPressed()) {
             soundwon.stop();
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
+            recreate();
+
         }
         if (endgame.isPressed()) {
             soundwon.stop();
-            Intent intent = new Intent(PlayActivity.this, MainMenuActivity.class);
-            startActivity(intent);
+            finish();
         }
 
         /* COMBO */
@@ -527,8 +525,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
                     public void onClick(DialogInterface arg0, int arg1) {
                         soundwon.stop();
-                        Intent intent = new Intent(PlayActivity.this, MainMenuActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 }).create().show();
     }

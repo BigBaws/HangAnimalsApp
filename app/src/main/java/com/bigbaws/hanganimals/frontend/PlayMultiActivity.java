@@ -2,60 +2,88 @@ package com.bigbaws.hanganimals.frontend;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bigbaws.hanganimals.R;
-import com.bigbaws.hanganimals.backend.logic.GameLogic;
+import com.bigbaws.hanganimals.backend.dao.RESTConnector;
+import com.bigbaws.hanganimals.backend.exceptions.DAOException;
+import com.bigbaws.hanganimals.backend.user.User;
+import com.bigbaws.hanganimals.backend.util.ActivePlayersCustomAdapter;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
 public class PlayMultiActivity extends AppCompatActivity implements View.OnClickListener {
 
-    GameLogic logic = new GameLogic();
+    private ListView competitors_listView;
+    private String roomid;
+    private ArrayList<String> competitors =  new ArrayList<String>();
+    private ArrayList<String> competitors_score_list =  new ArrayList<String>();
+    private final Handler handler = new Handler();
+    private boolean activityIsActive = true;
+    private TextView wordToGuess;
+    private Button replay, endgame;
+    private ImageView d_head;
+    private ImageView d_stomach;
+    private ImageView d_armleft;
+    private ImageView d_armright;
+    private ImageView d_legleft;
+    private ImageView d_legright;
+    private Button a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,vb,w,x,y,z,æ,ø,å;
+    private MediaPlayer soundwon;
+    private SharedPreferences shared;
 
-    TextView info, tvhighscore, tvhighscoretxt, tvgamescore, tvgamescoretxt;
-    Button replay, endgame;
-
-    ImageView d_head;
-    ImageView d_stomach;
-    ImageView d_armleft;
-    ImageView d_armright;
-    ImageView d_legleft;
-    ImageView d_legright;
-
-    Button a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,vb,w,x,y,z,æ,ø,å;
-    MediaPlayer soundwon;
-
-    SharedPreferences shared;
-    Timer timer;
-    int time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.play_activity);
+        setContentView(R.layout.play_multi_activity);
+
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle.getString("SecretWord")!= null) {
-            logic.setSecretWord(bundle.getString("SecretWord"));
+        if(bundle.getString("roomid")!= null) {
+            roomid = bundle.getString("roomid");
         }
+
+        /* Retrieves the hidden word to be shown on screen */
+        getHiddenWordAsync();
+
+        /* Makes a call every 5 seconds to update list of active players in a room */
+        handler.postDelayed(new Runnable()   {
+            @Override
+            public void run() {
+
+                if(activityIsActive) {
+                    Log.e("Update", "Active Users Updated");
+                    getActiveUsersAsync();
+                    handler.postDelayed(this, 5000);
+                }else {
+                    handler.removeCallbacks(this);
+                }
+            }
+        }, 0);
+
 
         /* Load Shared Preferences Data */
         shared = getSharedPreferences("NumberOfGames", Context.MODE_PRIVATE);
@@ -64,33 +92,6 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
         editor.putInt("NumberOfGames", NoGames+1);
         editor.commit();
 
-        /* GameScore */
-        tvgamescore = (TextView) findViewById(R.id.play_gamescore);
-        tvgamescoretxt = (TextView) findViewById(R.id.play_gamescore_txt);
-        tvgamescore.setText("");
-        tvgamescoretxt.setText("");
-
-        tvhighscore = (TextView) findViewById(R.id.play_highscore);
-        tvhighscoretxt = (TextView) findViewById(R.id.play_highscore_txt);
-        tvhighscoretxt.setText("Time");
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        tvhighscore.setText(""+time);
-                        time++;
-                    }
-                });
-            }
-        }, 1000, 1000);
-
-        info = (TextView) findViewById(R.id.info);
 
         /* Set the parts to invisible */
         makeHangManInvisible();
@@ -99,167 +100,47 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
         makeButtons();
         makeHandlers();
 
-        /* Assign the textview */
-        info = (TextView) findViewById(R.id.info);
+        /* Assign TextView */
+        wordToGuess = (TextView) findViewById(R.id.info);
+
 
         /* Sound */
         soundwon = MediaPlayer.create(this, R.raw.ucanttouchthis);
 
-        updateScreen();
-
+//        updateScreen();
     }
 
 
     private void updateScreen() {
-        info.setText("Guess the word:\n " + logic.getViewWord());
-        info.append("\n\nTries " + logic.getWrongs() + "/6 \n\n Your Entries: \n" + logic.getUsedLetters());
+//
 
-        if (logic.getWrongs() == 1) {
-            d_head.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 2) {
-            d_stomach.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 3) {
-            d_armleft.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 4) {
-            d_armright.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 5) {
-            d_legleft.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 6) {
-            d_legright.setVisibility(View.VISIBLE);
-        }
 
-        /* Game was won */
-        if (logic.isGameWon()) {
-            timer.cancel();
-            soundwon.start();
-            info.setText("You've guessed the word, so the animal gets to live!\n");
-            info.append("The correct word was \"" + logic.getWord() + "\".\nYou guessed the word in "+time+" seconds");
 
-            /* Make Buttons disappear and show replay button*/
-            hideButtons();
-            replay.setVisibility(View.VISIBLE);
-            endgame.setVisibility(View.VISIBLE);
-        }
-        /* Game was lost */
-        if (logic.isGameLost()) {
-            timer.cancel();
-            info.setText("You have lost, the word was \n\n" + logic.getWord());
-            replay.setVisibility(View.VISIBLE);
-            endgame.setVisibility(View.VISIBLE);
-
-            /* Make top row disappear and show replay button*/
-            hideButtons();
-            replay.setVisibility(View.VISIBLE);
-        }
-
+//
+//        /* Game was won */
+//        if (logic.isGameWon()) {
+//            soundwon.start();
+////            info.setText("You've guessed the word, so the animal gets to live!\n");
+////            info.append("The correct word was \"" + logic.getWord() + "\".\nYou guessed the word in "+time+" seconds");
+//
+//            /* Make Buttons disappear and show replay button*/
+//            hideButtons();
+//            replay.setVisibility(View.VISIBLE);
+//            endgame.setVisibility(View.VISIBLE);
+//        }
+//        /* Game was lost */
+//        if (logic.isGameLost()) {
+////            timer.cancel();
+////            info.setText("You have lost, the word was \n\n" + logic.getWord());
+//            replay.setVisibility(View.VISIBLE);
+//            endgame.setVisibility(View.VISIBLE);
+//
+//            /* Make top row disappear and show replay button*/
+//            hideButtons();
+//            replay.setVisibility(View.VISIBLE);
+//        }
+//
     }
-
-    @Override
-    public void onClick(View v) {
-        System.out.println("Click");
-        if (a.isPressed()) {
-            logic.gætBogstav("a");
-            a.setVisibility(View.INVISIBLE);
-        } else if (b.isPressed()) {
-            logic.gætBogstav("b");
-            b.setVisibility(View.INVISIBLE);
-        } else if (c.isPressed()) {
-            logic.gætBogstav("c");
-            c.setVisibility(View.INVISIBLE);
-        } else if (d.isPressed()) {
-            logic.gætBogstav("d");
-            d.setVisibility(View.INVISIBLE);
-        } else if (e.isPressed()) {
-            logic.gætBogstav("e");
-            e.setVisibility(View.INVISIBLE);
-        } else if (f.isPressed()) {
-            logic.gætBogstav("f");
-            f.setVisibility(View.INVISIBLE);
-        } else if (g.isPressed()) {
-            logic.gætBogstav("g");
-            g.setVisibility(View.INVISIBLE);
-        } else if (h.isPressed()) {
-            logic.gætBogstav("h");
-            h.setVisibility(View.INVISIBLE);
-        } else if (i.isPressed()) {
-            logic.gætBogstav("i");
-            i.setVisibility(View.INVISIBLE);
-        } else if (j.isPressed()) {
-            logic.gætBogstav("j");
-            j.setVisibility(View.INVISIBLE);
-        } else if (k.isPressed()) {
-            logic.gætBogstav("k");
-            k.setVisibility(View.INVISIBLE);
-        } else if (l.isPressed()) {
-            logic.gætBogstav("l");
-            l.setVisibility(View.INVISIBLE);
-        } else if (m.isPressed()) {
-            logic.gætBogstav("m");
-            m.setVisibility(View.INVISIBLE);
-        } else if (n.isPressed()) {
-            logic.gætBogstav("n");
-            n.setVisibility(View.INVISIBLE);
-        } else if (o.isPressed()) {
-            logic.gætBogstav("o");
-            o.setVisibility(View.INVISIBLE);
-        } else if (p.isPressed()) {
-            logic.gætBogstav("p");
-            p.setVisibility(View.INVISIBLE);
-        } else if (q.isPressed()) {
-            logic.gætBogstav("q");
-            q.setVisibility(View.INVISIBLE);
-        } else if (r.isPressed()) {
-            logic.gætBogstav("r");
-            r.setVisibility(View.INVISIBLE);
-        } else if (s.isPressed()) {
-            logic.gætBogstav("s");
-            s.setVisibility(View.INVISIBLE);
-        } else if (t.isPressed()) {
-            logic.gætBogstav("t");
-            t.setVisibility(View.INVISIBLE);
-        } else if (u.isPressed()) {
-            logic.gætBogstav("u");
-            u.setVisibility(View.INVISIBLE);
-        } else if (vb.isPressed()) {
-            logic.gætBogstav("v");
-            vb.setVisibility(View.INVISIBLE);
-        } else if (w.isPressed()) {
-            logic.gætBogstav("w");
-            w.setVisibility(View.INVISIBLE);
-        } else if (x.isPressed()) {
-            logic.gætBogstav("x");
-            x.setVisibility(View.INVISIBLE);
-        } else if (y.isPressed()) {
-            logic.gætBogstav("y");
-            y.setVisibility(View.INVISIBLE);
-        } else if (z.isPressed()) {
-            logic.gætBogstav("z");
-            z.setVisibility(View.INVISIBLE);
-        } else if (æ.isPressed()) {
-            logic.gætBogstav("æ");
-            æ.setVisibility(View.INVISIBLE);
-        } else if (ø.isPressed()) {
-            logic.gætBogstav("ø");
-            ø.setVisibility(View.INVISIBLE);
-        } else if (å.isPressed()) {
-            logic.gætBogstav("å");
-            å.setVisibility(View.INVISIBLE);
-        }
-
-        if (replay.isPressed()) {
-            soundwon.stop();
-            Intent intent = new Intent(PlayMultiActivity.this, MultiplayerActivity.class);
-            finish();
-            startActivity(intent);
-        }
-        if (endgame.isPressed()) {
-            soundwon.stop();
-            Intent intent = new Intent(PlayMultiActivity.this, MainMenuActivity.class);
-            startActivity(intent);
-        }
-        updateScreen();
-    }
-
     private void makeButtons() {
         replay = (Button) findViewById(R.id.btn_replay);
         replay.setVisibility(View.GONE);
@@ -329,7 +210,6 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
         ø.setVisibility(View.INVISIBLE);
         å.setVisibility(View.INVISIBLE);
     }
-
     private void makeHandlers() {
         a.setOnClickListener(this);
         b.setOnClickListener(this);
@@ -361,7 +241,6 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
         ø.setOnClickListener(this);
         å.setOnClickListener(this);
     }
-
     private void makeHangManInvisible() {
         d_head = (ImageView) findViewById(R.id.d_head);
         d_stomach = (ImageView) findViewById(R.id.d_stomach);
@@ -411,20 +290,433 @@ public class PlayMultiActivity extends AppCompatActivity implements View.OnClick
         d_legleft.setVisibility(View.INVISIBLE);
         d_legright.setVisibility(View.INVISIBLE);
     }
+    public void getActiveUsersAsync() {
+
+
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+                    return RESTConnector.GETQuery("/multiplayer/room/" + roomid + "/users?token=" + User.token);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+//                progressDialog.dismiss();
+
+
+                if(jsonObject == null) {
+                    Log.e("GET ACTIVE USERS", "Object is null");
+                }else {
+
+                    try {
+                        JSONArray array = jsonObject.getJSONArray("users");
+                        System.out.println("ACTIVE USERS ARRAY: " + array);
+
+                        competitors.clear();
+                        competitors_score_list.clear();
+
+                        for (int i = 0; i < array.length(); i++) {
+
+                            String contester_id = array.getJSONObject(i).getString("name");
+                            String contester_score = array.getJSONObject(i).getString("gamescore");
+
+
+                            competitors.add(contester_id);
+                            competitors_score_list.add(contester_score);
+
+
+                        }
+
+
+
+                        ActivePlayersCustomAdapter adapter = new ActivePlayersCustomAdapter(competitors, competitors_score_list, PlayMultiActivity.this);
+                        competitors_listView = (ListView) findViewById(R.id.contesters_list);
+                        competitors_listView.setAdapter(adapter);
+
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+
+            }
+
+
+        }.execute();
+
+
+    }
+    public void leaveRoomAsync() {
+        activityIsActive = false;
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", params[0])
+                            .appendQueryParameter("userid", params[1]);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    Log.e("leave room", encodedParams);
+
+                    return RESTConnector.POSTQuery(encodedParams, params[2]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+//                progressDialog = ProgressDialog.show(context,
+//                        "Please wait",
+//                        "Attempting to join room");
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+//                progressDialog.dismiss();
+
+                System.out.println("LEAVE ROOM RETURN OBJECT = " + jsonObject);
+
+
+
+            }
+
+
+        }.execute(User.token, User.id, "/multiplayer/room/" + roomid + "/leave");
+    }
+    public void guessLetterAsync(String letter) {
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", params[0])
+                            .appendQueryParameter("userid", params[1])
+                            .appendQueryParameter("letter", params[2]);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    Log.e("leave room", encodedParams);
+
+                    return RESTConnector.POSTQuery(encodedParams, params[3]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                System.out.println("GuessLetterAsync " + jsonObject);
+
+                /* Below code updates screen and checks wether or not a game is won */
+                try {
+                    String hiddenWord = jsonObject.getString("word");
+                    int wrongs = Integer.parseInt(jsonObject.getString("wrongs"));
+
+                    /* Update hidden word whenever a guess is made */
+                    wordToGuess.setText("Guess the word below before your friends!\n\n" + hiddenWord);
+
+                    if (wrongs == 1) {
+                        d_head.setVisibility(View.VISIBLE);
+                    } else if (wrongs == 2) {
+                        d_stomach.setVisibility(View.VISIBLE);
+                    } else if (wrongs == 3) {
+                        d_armleft.setVisibility(View.VISIBLE);
+                    } else if (wrongs == 4) {
+                        d_armright.setVisibility(View.VISIBLE);
+                    } else if (wrongs == 5) {
+                        d_legleft.setVisibility(View.VISIBLE);
+                    } else if (wrongs == 6) {
+                        d_legright.setVisibility(View.VISIBLE);
+                    }
+
+                    if(wrongs == 6) {
+                        wordToGuess.setText("You didn't guess the word :(\n\n" + hiddenWord);
+                        replay.setVisibility(View.VISIBLE);
+                        endgame.setVisibility(View.VISIBLE);
+
+                        /* Make top row disappear and show replay button*/
+                        hideButtons();
+                        replay.setVisibility(View.VISIBLE);
+                    }
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+
+
+            }
+
+
+        }.execute(User.token, User.id, letter, "/multiplayer/room/" + roomid + "/guess");
+    }
+    public void getHiddenWordAsync() {
+
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+                try {
+                    return RESTConnector.GETQuery("/multiplayer/room/" + roomid + "/userword?token=" + User.token + "&userid=" + User.id);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+
+                if(jsonObject == null) {
+                    Log.e("GetHiddenWord", "Object is null");
+                }else {
+
+                    try {
+
+                        String hiddenWord = jsonObject.getString("userword");
+                        Log.e("hiddenWord", hiddenWord);
+
+                        /* Set hidden work when game is started */
+                        wordToGuess.setText("Guess the word below before your friends!\n" + hiddenWord);
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+
+            }
+
+
+        }.execute();
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+        System.out.println("Click");
+        if (a.isPressed()) {
+            guessLetterAsync("a");
+            a.setVisibility(View.INVISIBLE);
+        } else if (b.isPressed()) {
+            guessLetterAsync("b");
+            b.setVisibility(View.INVISIBLE);
+        } else if (c.isPressed()) {
+            guessLetterAsync("c");
+            c.setVisibility(View.INVISIBLE);
+        } else if (d.isPressed()) {
+            guessLetterAsync("d");
+            d.setVisibility(View.INVISIBLE);
+        } else if (e.isPressed()) {
+            guessLetterAsync("e");
+            e.setVisibility(View.INVISIBLE);
+        } else if (f.isPressed()) {
+            guessLetterAsync("f");
+            f.setVisibility(View.INVISIBLE);
+        } else if (g.isPressed()) {
+            guessLetterAsync("g");
+            g.setVisibility(View.INVISIBLE);
+        } else if (h.isPressed()) {
+            guessLetterAsync("h");
+            h.setVisibility(View.INVISIBLE);
+        } else if (i.isPressed()) {
+            guessLetterAsync("i");
+            i.setVisibility(View.INVISIBLE);
+        } else if (j.isPressed()) {
+            guessLetterAsync("j");
+            j.setVisibility(View.INVISIBLE);
+        } else if (k.isPressed()) {
+            guessLetterAsync("k");
+            k.setVisibility(View.INVISIBLE);
+        } else if (l.isPressed()) {
+            guessLetterAsync("l");
+            l.setVisibility(View.INVISIBLE);
+        } else if (m.isPressed()) {
+            guessLetterAsync("m");
+            m.setVisibility(View.INVISIBLE);
+        } else if (n.isPressed()) {
+            guessLetterAsync("n");
+            n.setVisibility(View.INVISIBLE);
+        } else if (o.isPressed()) {
+            guessLetterAsync("o");
+            o.setVisibility(View.INVISIBLE);
+        } else if (p.isPressed()) {
+            guessLetterAsync("p");
+            p.setVisibility(View.INVISIBLE);
+        } else if (q.isPressed()) {
+            guessLetterAsync("q");
+            q.setVisibility(View.INVISIBLE);
+        } else if (r.isPressed()) {
+            guessLetterAsync("r");
+            r.setVisibility(View.INVISIBLE);
+        } else if (s.isPressed()) {
+            guessLetterAsync("s");
+            s.setVisibility(View.INVISIBLE);
+        } else if (t.isPressed()) {
+            guessLetterAsync("t");
+            t.setVisibility(View.INVISIBLE);
+        } else if (u.isPressed()) {
+            guessLetterAsync("u");
+            u.setVisibility(View.INVISIBLE);
+        } else if (vb.isPressed()) {
+            guessLetterAsync("v");
+            vb.setVisibility(View.INVISIBLE);
+        } else if (w.isPressed()) {
+            guessLetterAsync("w");
+            w.setVisibility(View.INVISIBLE);
+        } else if (x.isPressed()) {
+            guessLetterAsync("x");
+            x.setVisibility(View.INVISIBLE);
+        } else if (y.isPressed()) {
+            guessLetterAsync("y");
+            y.setVisibility(View.INVISIBLE);
+        } else if (z.isPressed()) {
+            guessLetterAsync("z");
+            z.setVisibility(View.INVISIBLE);
+        } else if (æ.isPressed()) {
+            guessLetterAsync("æ");
+            æ.setVisibility(View.INVISIBLE);
+        } else if (ø.isPressed()) {
+            guessLetterAsync("ø");
+            ø.setVisibility(View.INVISIBLE);
+        } else if (å.isPressed()) {
+            guessLetterAsync("å");
+            å.setVisibility(View.INVISIBLE);
+        }
+
+        if (replay.isPressed()) {
+            soundwon.stop();
+            recreate();
+        }
+        if (endgame.isPressed()) {
+            soundwon.stop();
+            leaveRoomAsync();
+            finish();
+
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
+
+
         new AlertDialog.Builder(this)
-                .setTitle("Really Exit?")
+                .setTitle("Warning!")
                 .setMessage("Are you sure you want to exit?")
                 .setNegativeButton(android.R.string.no, null)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface arg0, int arg1) {
+                        activityIsActive = false;
+                        leaveRoomAsync();
+
                         soundwon.stop();
-                        Intent intent = new Intent(PlayMultiActivity.this, MainMenuActivity.class);
-                        startActivity(intent);
+                        finish();
+
                     }
                 }).create().show();
     }
+
+
+
+
+//    public void listenAsync() {
+//
+//        new AsyncTask<String, Void, JSONObject>() {
+//
+//            @Override
+//            protected JSONObject doInBackground(String... params) {
+//
+//                try {
+//                    return RESTConnector.GETQuery("/multiplayer/room/" + roomid + "/listen");
+//                } catch (DAOException e) {
+//                    e.printStackTrace();
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onPreExecute() {
+//
+//
+//            }
+//
+//            @Override
+//            protected void onPostExecute(JSONObject jsonObject) {
+//
+//                if(jsonObject == null) {
+//                    Log.e("GetUserWord", "Object is null");
+//                }else {
+//
+//
+//                    Log.e("LISTEN", jsonObject.toString());
+//
+//
+//                }
+//
+//
+//
+//            }
+//
+//
+//        }.execute();
+//    }
+
+
 }

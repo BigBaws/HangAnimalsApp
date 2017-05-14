@@ -31,7 +31,7 @@ public class RESTConnector {
         try {
 
             URL url = new URL(baseURL + endPath);
-
+            Log.e("POST URL", url.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setReadTimeout(10000);
@@ -51,7 +51,7 @@ public class RESTConnector {
             conn.connect();
 
             int responseCode = conn.getResponseCode();
-            System.out.println("Response code: " + responseCode);
+            System.out.println("POST QUERY HTTP RESPONSE CODE = " + responseCode);
 
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 Log.e("POST QUERY - HTTP OK", "TRUE");
@@ -75,7 +75,7 @@ public class RESTConnector {
             }
             else {
 
-                System.out.println("HTTP response code: "+responseCode);
+                System.out.println("POST QUERY HTTP RESPONSE CODE = "+responseCode);
                 return null;
             }
         } catch(Exception e){
@@ -106,7 +106,7 @@ public class RESTConnector {
                 e.printStackTrace();
             }
         } catch (IOException e) {
-            throw new DAOException("Error connecting to the host " + requestURL);
+            throw new DAOException("GET QUERY: Error connecting to the host " + requestURL);
         }
 
         return null;
@@ -116,9 +116,9 @@ public class RESTConnector {
 
         try {
 
-            Log.e("Params PUT",encodedParams );
+            Log.e("PUT Params",encodedParams );
             URL url = new URL(baseURL + endPath);
-            System.out.println(url.toString());
+            System.out.println("PUTQuery PATH = " + url.toString());
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -139,8 +139,7 @@ public class RESTConnector {
             conn.connect();
 
             int responseCode = conn.getResponseCode();
-            System.out.println("Response code: " + responseCode);
-
+            System.out.println("PUT QUERY HTTP RESPONSE CODE = " + responseCode);
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
@@ -161,7 +160,7 @@ public class RESTConnector {
 
             } else {
 
-                System.out.println("HTTP response code: " + responseCode);
+                System.out.println("PUT QUERY HTTP RESPONSE CODE = " + responseCode);
                 return null;
             }
         } catch (Exception e) {

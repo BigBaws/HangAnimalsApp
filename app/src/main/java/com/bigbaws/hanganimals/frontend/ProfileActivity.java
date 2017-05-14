@@ -39,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     SharedPreferences shared;
 
     public TextView profile_study, profile_name, profile_email, profile_animal, profile_games, profile_won, profile_winstreak, profile_highscore, profile_combo;
-    public Button logout, reset;
+    public Button reset;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         profile_name = (TextView) findViewById(R.id.profile_edit_name);
         profile_email = (TextView) findViewById(R.id.profile_edit_email);
         profile_animal = (TextView) findViewById(R.id.profile_animal_name);
-        logout = (Button) findViewById(R.id.profile_btn_logout);
-        logout.setOnClickListener(this);
+
 
 
         profile_study.setText(User.study);
@@ -102,11 +101,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (logout.isPressed()) {
-//            mAuth.signOut();
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            startActivity(intent);
-        } else if (reset.isPressed()) {
+        if (reset.isPressed()) {
             shared = getSharedPreferences("NumberOfGames", Context.MODE_PRIVATE);
             SharedPreferences.Editor egames = shared.edit();
             egames.putInt("NumberOfGames", 0);

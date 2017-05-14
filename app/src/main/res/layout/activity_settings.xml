@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_blue"
+    android:layout_height="match_parent"
+    tools:context="com.bigbaws.hanganimals.frontend.SettingsActivity">
+
+
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Settings"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="36sp"
+        android:textStyle="normal|bold" />
+
+
+    <Button
+        android:text="Change Animal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_btn_changeanimal"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        style="@style/com_facebook_button_like"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:layout_above="@+id/settings_btn_logout" />
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/settings_btn_logout"
+        style="@style/com_facebook_button_like"
+        android:textSize="18sp"
+        android:textStyle="normal|bold"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp" />
+
+
+
+
+
+
+
+
+
+</RelativeLayout>

@@ -1,13 +1,11 @@
 package com.bigbaws.hanganimals.frontend;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,22 +14,17 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
-import com.bigbaws.hanganimals.backend.util.CustomListAdapter;
+import com.bigbaws.hanganimals.backend.util.ChangeAnimalCustomAdapter;
 import com.bigbaws.hanganimals.backend.util.PayPalController;
-import com.paypal.android.sdk.payments.PayPalAuthorization;
-import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
 import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.math.BigDecimal;
 
@@ -115,7 +108,7 @@ public class ChangeAnimalActivity extends Activity implements View.OnClickListen
 
 
 
-        CustomListAdapter adapter = new CustomListAdapter(this, animals, imgId);
+        ChangeAnimalCustomAdapter adapter = new ChangeAnimalCustomAdapter(this, animals, imgId);
 
         animalsListView = (ListView) findViewById(android.R.id.list);
         animalsListView.setAdapter(adapter);
