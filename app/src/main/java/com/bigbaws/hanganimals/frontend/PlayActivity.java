@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +24,30 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bigbaws.hanganimals.R;
+import com.bigbaws.hanganimals.backend.dao.RESTConnector;
+import com.bigbaws.hanganimals.backend.exceptions.DAOException;
 import com.bigbaws.hanganimals.backend.logic.GameLogic;
+import com.bigbaws.hanganimals.backend.user.User;
+import com.bigbaws.hanganimals.backend.util.ActivePlayersCustomAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener {
 
-    GameLogic logic = new GameLogic();
+
+    private String wordToGuess;
+
+//
+//    GameLogic logic = new GameLogic();
 
     TextView info, tvhighscore, tvgamescore, tvcombo;
     ImageView comboimage;
@@ -55,6 +70,13 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.play_activity);
 
+        Bundle bundle = getIntent().getExtras();
+        if(bundle.getString("word")!= null) {
+            wordToGuess = bundle.getString("word");
+        }
+
+
+
         /* Load Shared Preferences Data */
         shared = getSharedPreferences("NumberOfGames", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = shared.edit();
@@ -72,236 +94,217 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         comboimage = (ImageView) findViewById(R.id.play_combo_image);
         comboimage.setImageResource(0);
 
-        timer = new CountDownTimer(120000, 1000) { // adjust the milli seconds here
-            public void onTick(long millisUntilFinished) {
-                if (logic.getWord() != null) {
-                    tvgamescore.setText("" + (millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000)));
-                    gamescore = millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000);
-                }
-            }
-            public void onFinish() {
-                tvgamescore.setText("0");
-            }
-        }.start();
+//        timer = new CountDownTimer(120000, 1000) { // adjust the milli seconds here
+//            public void onTick(long millisUntilFinished) {
+//                if (logic.getWord() != null) {
+//                    tvgamescore.setText("" + (millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000)));
+//                    gamescore = millisUntilFinished * logic.getWord().length() - (logic.getWrongs() * 10000);
+//                }
+//            }
+//            public void onFinish() {
+//                tvgamescore.setText("0");
+//            }
+//        }.start();
 
-
-        info = (TextView) findViewById(R.id.info);
-
-        new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object... arg0) {
-                try {
-                    logic.hentOrdFraDr();
-                    return "Ordene blev korrekt hentet fra DR's server \n";
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return "Ordene blev ikke hentet korrekt: \n"+e;
-                }
-            }
-
-
-            @Override
-            protected void onPostExecute(Object resultat) {
-                logic.nulstil();
-                info.setText("Guess the word:\n " + logic.getViewWord());
-                /* Assign Button handlers */
-                makeHandlers();
-            }
-        }.execute();
 
         /* Set the parts to invisible */
         makeHangManInvisible();
 
         /* Assign Buttons */
         makeButtons();
+        makeHandlers();
 
         /* Assign the textview */
         info = (TextView) findViewById(R.id.info);
+        info.setText("Guess the word below\n\n" + wordToGuess);
 
         /* Sound */
         soundwon = MediaPlayer.create(this, R.raw.ucanttouchthis);
         soundplay = MediaPlayer.create(this, R.raw.play);
         soundplay.start();
 
-        updateScreen();
 
     }
 
 
-    private void updateScreen() {
-        info.setText("Guess the word:\n " + logic.getViewWord());
-        info.append("\n\nTries " + logic.getWrongs() + "/6 \n\n Your Entries: \n" + logic.getUsedLetters());
+    private void updateScreen(String hiddenWord, int wrongs) {
 
-        if (logic.getWrongs() == 1) {
+        info.setText("Guess the word below\n\n" + hiddenWord);
+
+
+
+        if (wrongs == 1) {
             d_head.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 2) {
+        } else if (wrongs == 2) {
             d_stomach.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 3) {
+        } else if ( wrongs == 3) {
             d_armleft.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 4) {
+        } else if (wrongs == 4) {
             d_armright.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 5) {
+        } else if (wrongs == 5) {
             d_legleft.setVisibility(View.VISIBLE);
-        } else if (logic.getWrongs() == 6) {
+        } else if (wrongs == 6) {
             d_legright.setVisibility(View.VISIBLE);
         }
 
+
+
         /* Game was won */
-        if (logic.isGameWon()) {
-            tvcombo.setText(""+ ++combo);
-            timer.cancel();
-            soundwon.start();
-            info.setText("You've guessed the word, so the animal gets to live!\n");
-            if (gamescore > highscore) {
-                info.append("The correct word was \"" + logic.getWord() + "\".\nYour new highscore is "+gamescore);
-            } else {
-                info.append("The correct word was \"" + logic.getWord() + "\".\nThe gamescore is "+gamescore);
-            }
-
-            /* Won */
-            shared = getSharedPreferences("Won", Context.MODE_PRIVATE);
-            SharedPreferences.Editor ewon = shared.edit();
-            int won = shared.getInt("Won", 0);
-            ewon.putInt("Won", won+1);
-            ewon.commit();
-
-            /* Win Streak */
-            shared = getSharedPreferences("WinStreak", Context.MODE_PRIVATE);
-            SharedPreferences.Editor ewin = shared.edit();
-            int streak = shared.getInt("WinStreak", 0);
-            ewin.putInt("WinStreak", streak+1);
-            ewin.commit();
-
-            /* Highscore */
-            shared = getSharedPreferences("Highscore", Context.MODE_PRIVATE);
-            long highscore = shared.getInt("Highscore", 0);
-            if (gamescore > highscore) {
-                SharedPreferences.Editor ehigh = shared.edit();
-                ehigh.putInt("Highscore", gamescore.intValue());
-                ehigh.commit();
-            }
-
-            /* Combo */
-            shared = getSharedPreferences("Combo", Context.MODE_PRIVATE);
-            SharedPreferences.Editor ecom = shared.edit();
-            ecom.putInt("Combo", combo);
-            ecom.commit();
-
-            /* Make Buttons disappear and show replay button*/
-            hideButtons();
-            replay.setVisibility(View.VISIBLE);
-            endgame.setVisibility(View.VISIBLE);
-        }
+//        if (logic.isGameWon()) {
+//            tvcombo.setText(""+ ++combo);
+//            timer.cancel();
+//            soundwon.start();
+//            info.setText("You've guessed the word, so the animal gets to live!\n");
+//            if (gamescore > highscore) {
+//                info.append("The correct word was \"" + logic.getWord() + "\".\nYour new highscore is "+gamescore);
+//            } else {
+//                info.append("The correct word was \"" + logic.getWord() + "\".\nThe gamescore is "+gamescore);
+//            }
+//
+//            /* Won */
+//            shared = getSharedPreferences("Won", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor ewon = shared.edit();
+//            int won = shared.getInt("Won", 0);
+//            ewon.putInt("Won", won+1);
+//            ewon.commit();
+//
+//            /* Win Streak */
+//            shared = getSharedPreferences("WinStreak", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor ewin = shared.edit();
+//            int streak = shared.getInt("WinStreak", 0);
+//            ewin.putInt("WinStreak", streak+1);
+//            ewin.commit();
+//
+//            /* Highscore */
+//            shared = getSharedPreferences("Highscore", Context.MODE_PRIVATE);
+//            long highscore = shared.getInt("Highscore", 0);
+//            if (gamescore > highscore) {
+//                SharedPreferences.Editor ehigh = shared.edit();
+//                ehigh.putInt("Highscore", gamescore.intValue());
+//                ehigh.commit();
+//            }
+//
+//            /* Combo */
+//            shared = getSharedPreferences("Combo", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor ecom = shared.edit();
+//            ecom.putInt("Combo", combo);
+//            ecom.commit();
+//
+//            /* Make Buttons disappear and show replay button*/
+//            hideButtons();
+//            replay.setVisibility(View.VISIBLE);
+//            endgame.setVisibility(View.VISIBLE);
+//        }
         /* Game was lost */
-        if (logic.isGameLost()) {
-            combo = 0;
-            timer.cancel();
-            info.setText("You have lost, the word was \n\n" + logic.getWord());
-            replay.setVisibility(View.VISIBLE);
-            endgame.setVisibility(View.VISIBLE);
-
-            /* Win Streak */
-            shared = getSharedPreferences("WinStreak", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = shared.edit();
-            editor.putInt("WinStreak", 0);
-            editor.commit();
-
-
-            /* Make top row disappear and show replay button*/
-            hideButtons();
-            replay.setVisibility(View.VISIBLE);
-        }
+//        if (logic.isGameLost()) {
+//            combo = 0;
+//            timer.cancel();
+//            info.setText("You have lost, the word was \n\n" + logic.getWord());
+//            replay.setVisibility(View.VISIBLE);
+//            endgame.setVisibility(View.VISIBLE);
+//
+//            /* Win Streak */
+//            shared = getSharedPreferences("WinStreak", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = shared.edit();
+//            editor.putInt("WinStreak", 0);
+//            editor.commit();
+//
+//
+//            /* Make top row disappear and show replay button*/
+//            hideButtons();
+//            replay.setVisibility(View.VISIBLE);
+//        }
 
     }
 
     @Override
     public void onClick(View v) {
         if (a.isPressed()) {
-            logic.gætBogstav("a");
+           guessLetterAsync("a");
             a.setVisibility(View.INVISIBLE);
         } else if (b.isPressed()) {
-            logic.gætBogstav("b");
+            guessLetterAsync("b");
             b.setVisibility(View.INVISIBLE);
         } else if (c.isPressed()) {
-            logic.gætBogstav("c");
+            guessLetterAsync("c");
             c.setVisibility(View.INVISIBLE);
         } else if (d.isPressed()) {
-            logic.gætBogstav("d");
+            guessLetterAsync("d");
             d.setVisibility(View.INVISIBLE);
         } else if (e.isPressed()) {
-            logic.gætBogstav("e");
+            guessLetterAsync("e");
             e.setVisibility(View.INVISIBLE);
         } else if (f.isPressed()) {
-            logic.gætBogstav("f");
+            guessLetterAsync("f");
             f.setVisibility(View.INVISIBLE);
         } else if (g.isPressed()) {
-            logic.gætBogstav("g");
+            guessLetterAsync("g");
             g.setVisibility(View.INVISIBLE);
         } else if (h.isPressed()) {
-            logic.gætBogstav("h");
+            guessLetterAsync("h");
             h.setVisibility(View.INVISIBLE);
         } else if (i.isPressed()) {
-            logic.gætBogstav("i");
+            guessLetterAsync("i");
             i.setVisibility(View.INVISIBLE);
         } else if (j.isPressed()) {
-            logic.gætBogstav("j");
+            guessLetterAsync("j");
             j.setVisibility(View.INVISIBLE);
         } else if (k.isPressed()) {
-            logic.gætBogstav("k");
+            guessLetterAsync("k");
             k.setVisibility(View.INVISIBLE);
         } else if (l.isPressed()) {
-            logic.gætBogstav("l");
+            guessLetterAsync("l");
             l.setVisibility(View.INVISIBLE);
         } else if (m.isPressed()) {
-            logic.gætBogstav("m");
+            guessLetterAsync("m");
             m.setVisibility(View.INVISIBLE);
         } else if (n.isPressed()) {
-            logic.gætBogstav("n");
+            guessLetterAsync("n");
             n.setVisibility(View.INVISIBLE);
         } else if (o.isPressed()) {
-            logic.gætBogstav("o");
+            guessLetterAsync("o");
             o.setVisibility(View.INVISIBLE);
         } else if (p.isPressed()) {
-            logic.gætBogstav("p");
+            guessLetterAsync("p");
             p.setVisibility(View.INVISIBLE);
         } else if (q.isPressed()) {
-            logic.gætBogstav("q");
+            guessLetterAsync("q");
             q.setVisibility(View.INVISIBLE);
         } else if (r.isPressed()) {
-            logic.gætBogstav("r");
+            guessLetterAsync("r");
             r.setVisibility(View.INVISIBLE);
         } else if (s.isPressed()) {
-            logic.gætBogstav("s");
+            guessLetterAsync("s");
             s.setVisibility(View.INVISIBLE);
         } else if (t.isPressed()) {
-            logic.gætBogstav("t");
+            guessLetterAsync("t");
             t.setVisibility(View.INVISIBLE);
         } else if (u.isPressed()) {
-            logic.gætBogstav("u");
+            guessLetterAsync("u");
             u.setVisibility(View.INVISIBLE);
         } else if (vb.isPressed()) {
-            logic.gætBogstav("v");
+            guessLetterAsync("v");
             vb.setVisibility(View.INVISIBLE);
         } else if (w.isPressed()) {
-            logic.gætBogstav("w");
+            guessLetterAsync("w");
             w.setVisibility(View.INVISIBLE);
         } else if (x.isPressed()) {
-            logic.gætBogstav("x");
+            guessLetterAsync("x");
             x.setVisibility(View.INVISIBLE);
         } else if (y.isPressed()) {
-            logic.gætBogstav("y");
+            guessLetterAsync("y");
             y.setVisibility(View.INVISIBLE);
         } else if (z.isPressed()) {
-            logic.gætBogstav("z");
+            guessLetterAsync("z");
             z.setVisibility(View.INVISIBLE);
         } else if (æ.isPressed()) {
-            logic.gætBogstav("æ");
+            guessLetterAsync("æ");
             æ.setVisibility(View.INVISIBLE);
         } else if (ø.isPressed()) {
-            logic.gætBogstav("ø");
+            guessLetterAsync("ø");
             ø.setVisibility(View.INVISIBLE);
         } else if (å.isPressed()) {
-            logic.gætBogstav("å");
+            guessLetterAsync("å");
             å.setVisibility(View.INVISIBLE);
         }
 
@@ -316,44 +319,43 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         /* COMBO */
-        System.out.println("**************** WORD!!!! **************");
-        System.out.println(logic.getWord());
-        System.out.println(logic.isLastCorrect());
-        if (logic.isLastCorrect()) {
-            if (!logic.isGameOver()) {
-                combo++;
-                if (combo > 1) {
-                    if (combo == 2) {
-                        soundcombo = MediaPlayer.create(this, R.raw.dominating);
-                        soundcombo.start();
-                    } else if (combo == 3) {
-                        soundcombo = MediaPlayer.create(this, R.raw.unstoppable);
-                        soundcombo.start();
-                    } else if (combo == 3) {
-                        soundcombo = MediaPlayer.create(this, R.raw.wickedsick);
-                        soundcombo.start();
-                    } else if (combo == 4) {
-                        soundcombo = MediaPlayer.create(this, R.raw.rampage);
-                        soundcombo.start();
-                    } else if (combo == 5) {
-                        soundcombo = MediaPlayer.create(this, R.raw.holyshit);
-                        soundcombo.start();
-                    } else if (combo > 6) {
-                        soundcombo = MediaPlayer.create(this, R.raw.godlike);
-                        soundcombo.start();
-                    }
-                    comboimage.setImageResource(R.drawable.combo);
-                    Animation fadein = AnimationUtils.loadAnimation(this, R.anim.combo);
-                    comboimage.startAnimation(fadein);
-                    comboimage.setVisibility(View.INVISIBLE);
-                }
-            }
-        } else {
-            combo = 0;
-        }
-        tvcombo.setText(""+combo);
+//        System.out.println("**************** WORD!!!! **************");
+//        System.out.println(logic.getWord());
+//        System.out.println(logic.isLastCorrect());
+//        if (logic.isLastCorrect()) {
+//            if (!logic.isGameOver()) {
+//                combo++;
+//                if (combo > 1) {
+//                    if (combo == 2) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.dominating);
+//                        soundcombo.start();
+//                    } else if (combo == 3) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.unstoppable);
+//                        soundcombo.start();
+//                    } else if (combo == 3) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.wickedsick);
+//                        soundcombo.start();
+//                    } else if (combo == 4) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.rampage);
+//                        soundcombo.start();
+//                    } else if (combo == 5) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.holyshit);
+//                        soundcombo.start();
+//                    } else if (combo > 6) {
+//                        soundcombo = MediaPlayer.create(this, R.raw.godlike);
+//                        soundcombo.start();
+//                    }
+//                    comboimage.setImageResource(R.drawable.combo);
+//                    Animation fadein = AnimationUtils.loadAnimation(this, R.anim.combo);
+//                    comboimage.startAnimation(fadein);
+//                    comboimage.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//        } else {
+//            combo = 0;
+//        }
+//        tvcombo.setText(""+combo);
 
-        updateScreen();
     }
 
     private void makeButtons() {
@@ -425,7 +427,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         ø.setVisibility(View.INVISIBLE);
         å.setVisibility(View.INVISIBLE);
     }
-
     private void makeHandlers() {
         a.setOnClickListener(this);
         b.setOnClickListener(this);
@@ -457,7 +458,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         ø.setOnClickListener(this);
         å.setOnClickListener(this);
     }
-
     private void makeHangManInvisible() {
         d_head = (ImageView) findViewById(R.id.d_head);
         d_stomach = (ImageView) findViewById(R.id.d_stomach);
@@ -518,15 +518,133 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Really Exit?")
+                .setTitle("Warning!")
                 .setMessage("Are you sure you want to exit?")
                 .setNegativeButton(android.R.string.no, null)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface arg0, int arg1) {
                         soundwon.stop();
-                        finish();
+
+                        leaveGameAsync();
                     }
                 }).create().show();
+
+
     }
+
+
+    public void leaveGameAsync() {
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", User.token)
+                            .appendQueryParameter("userid", User.id)
+                            .appendQueryParameter("gameid", User.singleplayer);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    Log.e("leave room", encodedParams);
+
+                    return RESTConnector.POSTQuery(encodedParams, params[2]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+//                progressDialog = ProgressDialog.show(context,
+//                        "Please wait",
+//                        "Attempting to join room");
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+//                progressDialog.dismiss();
+
+                System.out.println("LEAVE GAME RETURN OBJECT = " + jsonObject);
+                finish();
+
+
+            }
+
+
+        }.execute("/singleplayer/leave");
+    }
+
+    public void guessLetterAsync(String letter) {
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", User.token)
+                            .appendQueryParameter("userid", User.id)
+                            .appendQueryParameter("gameid", User.singleplayer)
+                            .appendQueryParameter("letter", params[0]);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    Log.e("PARAMS SINGLEPLAYER", encodedParams);
+
+                    return RESTConnector.POSTQuery(encodedParams, params[1]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                System.out.println("GuessLetterAsync " + jsonObject);
+
+                /* Below code updates screen and checks wether or not a game is won */
+                try {
+                    String hiddenWord = jsonObject.getString("word");
+                    int wrongs = Integer.parseInt(jsonObject.getString("wrongs"));
+
+
+                    updateScreen(hiddenWord, wrongs);
+
+
+
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+
+
+            }
+
+
+        }.execute(letter, "/singleplayer/guess");
+    }
+
+
+
 }

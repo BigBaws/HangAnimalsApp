@@ -10,26 +10,22 @@ public class User {
     public static String name;
     public static String token;
     public static String study;
-//    public String singleplayer;
-//    public String multiplayer;
-//    public String animal;w
-//    public String animalColor;
+    public static String singleplayer;
+    public static String multiplayer;
 
-    public User(String id, String name, String study, String token) {
+    public User(String id, String name, String study, String token, String singleplayer, String multiplayer) {
         this.id = id;
         this.name = name;
         this.token = token;
         this.study = study;
+        this.singleplayer = singleplayer;
+        this.multiplayer = multiplayer;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-//    public String getUserName() { return this.name; }
-//    public String getUserID() { return this.id;}
-//    public String getUserToken() { return this.token;}
-//    public String getUserStudy() { return this.study;}
 
 
 }

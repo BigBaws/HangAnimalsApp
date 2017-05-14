@@ -1,33 +1,31 @@
 package com.bigbaws.hanganimals.frontend;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigbaws.hanganimals.R;
-import com.bigbaws.hanganimals.backend.asynctasks.SinglePlayerAsync;
+import com.bigbaws.hanganimals.backend.dao.RESTConnector;
 import com.bigbaws.hanganimals.backend.user.User;
-import com.bigbaws.hanganimals.backend.util.PayPalController;
-import com.paypal.android.sdk.payments.PayPalAuthorization;
-import com.paypal.android.sdk.payments.PayPalFuturePaymentActivity;
-import com.paypal.android.sdk.payments.PayPalProfileSharingActivity;
-import com.paypal.android.sdk.payments.PaymentActivity;
-import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by BigBaws on 11-Jan-17.
  */
 
 public class MainMenuActivity extends AppCompatActivity implements View.OnClickListener  {
+
+    private ProgressDialog progressDialog;
 
     /* Log */
     private static final String TAG = "";
@@ -75,22 +73,84 @@ public class MainMenuActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         if (btn_play.isPressed()) {
-            // token, userid, gameid, endpath
-//            new SinglePlayerAsync().execute(User.token, User.id, "0", "/singleplayer/create");
-
-            Intent intent = new Intent(MainMenuActivity.this, PlayActivity.class);
-            startActivity(intent);
+            createSinglePlayerGameAsync();
         } else if (btn_multiplayer.isPressed()) {
             Intent intent = new Intent(MainMenuActivity.this, MultiplayerActivity.class);
             startActivity(intent);
         } else if (btn_settings.isPressed()) {
             Intent intent = new Intent(MainMenuActivity.this, SettingsActivity.class);
             startActivity(intent);
-
         } else if (btn_profile.isPressed()) {
             Intent intent = new Intent(MainMenuActivity.this, ProfileActivity.class);
             startActivity(intent);
         }
+    }
+
+    public void createSinglePlayerGameAsync() {
+        new AsyncTask<String, Void, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... params) {
+
+
+                try {
+
+                    Uri.Builder builder = new Uri.Builder()
+                            .appendQueryParameter("token", User.token)
+                            .appendQueryParameter("userid", User.id)
+                            .appendQueryParameter("gameid", User.singleplayer);
+                    String encodedParams = builder.build().getEncodedQuery();
+
+                    return RESTConnector.PUTQuery(encodedParams, params[0]);
+
+
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                progressDialog = ProgressDialog.show(MainMenuActivity.this,
+                        "Please wait",
+                        "Creating New Game");
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonObject) {
+                progressDialog.dismiss();
+                System.out.println("OBJECT IN SINGLEPLAYER GAME CREATION = " + jsonObject);
+
+
+                if(jsonObject == null) {
+                    Log.e("CREATE GAME ERROR", "Singleplayer");
+                } else {
+
+                    try {
+                        String hiddenWord = jsonObject.getString("word");
+                        Intent intent = new Intent(MainMenuActivity.this, PlayActivity.class);
+                        intent.putExtra("word", hiddenWord);
+                        startActivity(intent);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
+
+
+            }
+
+
+        }.execute("/singleplayer/create");
     }
 
 }

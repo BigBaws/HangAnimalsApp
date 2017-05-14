@@ -95,10 +95,6 @@ public class GameRoomsCustomAdapter extends BaseAdapter implements ListAdapter {
 //                Toast.makeText(context, listItemText.getText(), Toast.LENGTH_SHORT).show();
 
                 // Start new multiplayer game
-                Intent intent = new Intent(context, PlayMultiActivity.class);
-                intent.putExtra("roomid", roomID);
-                context.startActivity(intent);
-
 
                 notifyDataSetChanged();
             }
@@ -145,6 +141,12 @@ public class GameRoomsCustomAdapter extends BaseAdapter implements ListAdapter {
             @Override
             protected void onPostExecute(JSONObject jsonObject) {
                 progressDialog.dismiss();
+
+                Intent intent = new Intent(context, PlayMultiActivity.class);
+                intent.putExtra("roomid", roomID);
+                context.startActivity(intent);
+
+
 
                 System.out.println("JOIN GAME OBJECT = " + jsonObject);
 

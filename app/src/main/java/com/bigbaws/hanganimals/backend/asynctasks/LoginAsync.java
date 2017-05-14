@@ -22,10 +22,10 @@ import org.json.JSONObject;
 public class LoginAsync extends AsyncTask<String, Void, JSONObject> {
 
     private ProgressDialog progressDialog;
-    Context c;
+    Context context;
 
-    public LoginAsync(Context c) {
-        this.c = c;
+    public LoginAsync(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -64,21 +64,23 @@ public class LoginAsync extends AsyncTask<String, Void, JSONObject> {
 
 
         if (result == null) {
-            Toast.makeText(c, "Wrong Student ID or Password!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Wrong Student ID or Password!", Toast.LENGTH_LONG).show();
             System.out.println("onPostExecute result is null");
         }
         else {
-//            Toast.makeText(c, "result received from background", Toast.LENGTH_LONG).show();
+//            Toast.makeText(context, "result received from background", Toast.LENGTH_LONG).show();
 
             try {
 
-                User user  = new User(result.getString("userid"), result.getString("name"), result.getString("study"), result.getString("token"));
-                Log.e("LOGIN ASYNC ON - USER", User.id);
-                Intent mainIntent = new Intent(c, MainMenuActivity.class);
-//                mainIntent.putExtra("ID", result.getString("userid"));
-                c.startActivity(mainIntent);
+                User user  = new User(result.getString("userid"), result.getString("name"), result.getString("study"), result.getString("token"), result.getString("singleplayer"), result.getString("multiplayer"));
+                Log.e("USER ID", User.id);
+                Log.e("USER TOKEN", User.token);
+                Log.e("USER SINGLEPLAY ID", User.singleplayer);
+                Log.e("USER Multi Play ID", User.multiplayer);
+                Intent mainIntent = new Intent(context, MainMenuActivity.class);
+                context.startActivity(mainIntent);
 
-                Log.e("onPost - user token", User.token);
+
 //                System.out.println("POST; user token: " + User.token);
 
 
@@ -93,7 +95,7 @@ public class LoginAsync extends AsyncTask<String, Void, JSONObject> {
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(c,
+        progressDialog = ProgressDialog.show(context,
                 "Please wait",
                 "Trying to sign in.");
     }

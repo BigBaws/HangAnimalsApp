@@ -44,23 +44,7 @@ public class MultiplayerActivity extends AppCompatActivity {
         super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.multiplayer_activity);
 
-      /* Makes a call every 5 seconds to update list of active players in a room */
-        handler.postDelayed(new Runnable()   {
-            @Override
-            public void run() {
 
-                if(activityIsActive) {
-                    Log.e("Update", "Room List Updated");
-                    addRoomsToListAsync();
-                    handler.postDelayed(this, 5000);
-                }else {
-                    handler.removeCallbacks(this);
-                }
-            }
-        }, 0);
-
-
-//        addRoomsToListAsync();
 
 
         createRoomBtn = (Button) findViewById(R.id.multiplayer_btn_createRoom);
@@ -76,6 +60,22 @@ public class MultiplayerActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void updateList() {
+        handler.postDelayed(new Runnable()   {
+            @Override
+            public void run() {
+
+                if(activityIsActive) {
+                    Log.e("Update", "Room List Updated");
+                    addRoomsToListAsync();
+                    handler.postDelayed(this, 5000);
+                }else {
+                    handler.removeCallbacks(this);
+                }
+            }
+        }, 0);
     }
 
     public void addRoomsToListAsync() {
@@ -186,9 +186,6 @@ public class MultiplayerActivity extends AppCompatActivity {
                 recreate();
 
                 Toast.makeText(MultiplayerActivity.this, "New room created!", Toast.LENGTH_SHORT).show();
-
-                // Game room ID is added to the list
-
                 System.out.println("OBJECT " + jsonObject);
 
 
@@ -203,7 +200,10 @@ public class MultiplayerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("TEst", "OnResume");
         activityIsActive = true;
+        /* Makes a call every 5 seconds to update list of active players in a room */
+        updateList();
     }
 
     @Override

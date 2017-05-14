@@ -204,7 +204,7 @@
                         android:text="C"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/c"
+                        android:id="@+id/context"
                         android:layout_weight="1" />
 
                     <Button
