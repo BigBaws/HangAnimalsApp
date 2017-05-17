@@ -73,7 +73,6 @@ public class ChatActivity extends AppCompatActivity {
                     String newMessage = chatText.getText().toString();
                     sendChatMessageAsync(newMessage);
 
-                    chatMessages.add(newMessage);
                     chatArrayAdapter.notifyDataSetChanged();
 
                     chatText.setText("");
@@ -125,7 +124,7 @@ public class ChatActivity extends AppCompatActivity {
                 System.out.println("SEND MESSAGE RESPONSE: " + jsonObject);
             }
 
-        }.execute("/chat/send");
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,"/chat/send");
 
     }
 
@@ -160,7 +159,7 @@ public class ChatActivity extends AppCompatActivity {
             }
 
 
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 

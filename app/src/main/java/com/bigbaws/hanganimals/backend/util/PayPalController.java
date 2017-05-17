@@ -56,6 +56,6 @@ public class PayPalController {
     public static PayPalConfiguration config = new PayPalConfiguration()
             .environment(CONFIG_ENVIRONMENT)
             .clientId(CONFIG_CLIENT_ID);
-    
+
 
 }
